@@ -1,4 +1,3 @@
-// משתנה לשמירת השחקנים
 let players = [];
 
 function addPlayer() {
@@ -7,7 +6,6 @@ function addPlayer() {
   if (!name) return;
 
   players.push({ name: name, buy: 0, win: 0 });
-
   updateSelectors();
   nameInput.value = "";
 }
@@ -29,19 +27,23 @@ function updateSelectors() {
 function incBuy(amount) {
   const sel = document.getElementById("selBuy");
   const idx = sel.value;
-  if (idx !== "") players[idx].buy += amount;
+  if (idx !== "") {
+    players[idx].buy += amount;
+  }
 }
 
 function incWin(amount) {
   const sel = document.getElementById("selWin");
   const idx = sel.value;
-  if (idx !== "") players[idx].win += amount;
+  if (idx !== "") {
+    players[idx].win += amount;
+  }
 }
 
 function showSettle() {
   let result = "";
 
-  players.forEach(p => {
+  players.forEach((p) => {
     const balance = p.win - p.buy;
     result += `${p.name}: ${balance}\n`;
   });
@@ -49,7 +51,7 @@ function showSettle() {
   document.getElementById("result").innerText = result;
 }
 
-// חייבים לחשוף את הפונקציות ל-HTML
+// חושפים את הפונקציות כדי שהכפתורים יפעלו
 window.addPlayer = addPlayer;
 window.incBuy = incBuy;
 window.incWin = incWin;
