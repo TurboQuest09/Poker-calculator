@@ -1,23 +1,40 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>מאזן כניסות פוקר</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://js.sentry-cdn.com/adc594d872955186bff54c5cbe96fbec.min.js" crossorigin="anonymous"></script>
 <script>
-const urlParams = new URLSearchParams(location.search);
-const hasGame = urlParams.has("game");
-
-if (hasGame) {
-  document.getElementById("startScreen").classList.add("hidden");
-  document.getElementById("mainScreen").classList.remove("hidden");
-} else {
-  document.getElementById("startScreen").classList.remove("hidden");
-  document.getElementById("mainScreen").classList.add("hidden");
-}
-
-function startGame() {
-  const startButton = document.querySelector("#startScreen button");
-  startButton.disabled = true;
-  startButton.innerText = "פותח משחק...";
-
-  setTimeout(() => {
-    const randomGameId = Math.floor(1000 + Math.random() * 9000); // מספר אקראי 4 ספרות
-    location.href = "?game=" + randomGameId;
-  }, 1000);
-}
+  Sentry.init({
+    dsn: "https://adc594d872955186bff54c5cbe96fbec@o4509221272485888.ingest.us.sentry.io/4509221357617152",
+    tracesSampleRate: 1.0,
+  });
 </script>
+
+<script type="module" src="app.js"></script>
+
+<style>
+  .hidden { display: none; }
+</style>
+</head>
+
+<body>
+
+<!-- מסך פתיחה -->
+<div id="startScreen">
+  <h2>ברוך הבא!</h2>
+  <p>לחץ כדי להתחיל משחק חדש:</p>
+  <button onclick="startGame()">התחל משחק חדש</button>
+</div>
+
+<!-- מסך ניהול המשחק -->
+<div id="mainScreen" class="hidden">
+  <h2>רישום משתתף חדש</h2>
+  <input id="newPlayer" placeholder="שם">
+  <button onclick="addPlayer()">הוסף</button>
+  <hr>
+
+  <h2>קנייה
