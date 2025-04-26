@@ -4,46 +4,71 @@
 <meta charset="UTF-8">
 <title>מאזן כניסות-פוקר</title>
 
-<!-- טעינת עיצוב -->
+<!-- קובץ עיצוב -->
 <link rel="stylesheet" href="style.css">
 
-<!-- טעינת ספריית Sentry -->
+<!-- טעינת Sentry -->
 <script src="https://js.sentry-cdn.com/adc594d872955186bff54c5cbe96fbec.min.js" crossorigin="anonymous"></script>
-
-<!-- חיבור ל-Sentry עם ה-DSN האישי שלך -->
 <script>
   Sentry.init({
     dsn: "https://adc594d872955186bff54c5cbe96fbec@o4509221272485888.ingest.us.sentry.io/4509221357617152",
-    integrations: [new Sentry.BrowserTracing()],
     tracesSampleRate: 1.0,
   });
 </script>
 
-<!-- טעינת לוגיקת האתר -->
+<!-- טעינת קוד -->
 <script type="module" src="app.js"></script>
+
+<style>
+  .hidden { display: none; }
+</style>
 </head>
 
 <body>
 
-<h2>רישום משתתף חדש</h2>
-<input id="newPlayer" placeholder="שם">
-<button onclick="addPlayer()">הוסף</button>
-<hr>
+<!-- מסך פתיחה: פתיחת משחק חדש -->
+<div id="startScreen">
+  <h2>ברוך הבא!</h2>
+  <p>התחל משחק חדש:</p>
+  <input id="gameName" placeholder="שם המשחק">
+  <button onclick="startGame()">התחל משחק</button>
+</div>
 
-<h2>קנייה</h2>
-<select id="selBuy"></select>
-<button onclick="incBuy(1)">+1</button>
-<button onclick="incBuy(-1)">-1</button>
-<hr>
+<!-- המסך הראשי: ניהול כניסות וניצחונות -->
+<div id="mainScreen" class="hidden">
+  <h2>רישום משתתף חדש</h2>
+  <input id="newPlayer" placeholder="שם">
+  <button onclick="addPlayer()">הוסף</button>
+  <hr>
 
-<h2>ניצחון</h2>
-<select id="selWin"></select>
-<button onclick="incWin(1)">+1</button>
-<button onclick="incWin(-1)">-1</button>
-<hr>
+  <h2>קנייה</h2>
+  <select id="selBuy"></select>
+  <button onclick="incBuy(1)">+1</button>
+  <button onclick="incBuy(-1)">-1</button>
+  <hr>
 
-<button onclick="showSettle()">חשב איזון</button>
-<pre id="result"></pre>
+  <h2>ניצחון</h2>
+  <select id="selWin"></select>
+  <button onclick="incWin(1)">+1</button>
+  <button onclick="incWin(-1)">-1</button>
+  <hr>
+
+  <button onclick="showSettle()">חשב איזון</button>
+  <pre id="result"></pre>
+</div>
+
+<script>
+if (new URLSearchParams(location.search).has("game")) {
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("mainScreen").classList.remove("hidden");
+}
+
+function startGame() {
+  const name = document.getElementById("gameName").value.trim();
+  if (!name) return alert("יש להכניס שם למשחק!");
+  location.href = "?game=" + encodeURIComponent(name);
+}
+</script>
 
 </body>
 </html>
