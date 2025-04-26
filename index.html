@@ -12,11 +12,8 @@
     });
   </script>
   <script type="module" src="app.js"></script>
-
   <style>
     .hidden { display: none; }
-    button { margin: 3px; }
-    .playerRow { margin-bottom: 5px; }
   </style>
 </head>
 
@@ -29,26 +26,23 @@
   <button onclick="startGame()">התחל משחק חדש</button>
 </div>
 
-<!-- מסך ניהול המשחק -->
+<!-- מסך המשחק -->
 <div id="mainScreen" class="hidden">
   <h2>רישום משתתף חדש</h2>
   <input id="newPlayer" placeholder="שם">
   <button onclick="addPlayer()">הוסף</button>
-
   <hr>
 
   <h2>קנייה</h2>
   <div id="buyList"></div>
-
   <hr>
 
   <h2>ניצחון</h2>
   <div id="winList"></div>
-
   <hr>
 
   <button onclick="showSettle()">חשב איזון</button>
-  <button onclick="copySummary()">העתק לווטסאפ</button>
+  <button onclick="copyResult()">העתק תוצאה</button>
   <pre id="result"></pre>
 </div>
 
