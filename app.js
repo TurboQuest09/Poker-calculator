@@ -51,7 +51,7 @@ function showSettle() {
   document.getElementById("result").innerText = result;
 }
 
-// חושפים את הפונקציות כדי שהכפתורים יפעלו
+// מאוד חשוב: לחשוף את הפונקציות
 window.addPlayer = addPlayer;
 window.incBuy = incBuy;
 window.incWin = incWin;
