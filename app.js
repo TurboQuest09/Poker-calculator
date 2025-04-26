@@ -1,55 +1,57 @@
 let players = [];
 
-function startGame() {
-  document.getElementById("startScreen").classList.add("hidden");
-  document.getElementById("mainScreen").classList.remove("hidden");
-}
-
 function addPlayer() {
   const nameInput = document.getElementById("newPlayer");
   const name = nameInput.value.trim();
   if (!name) return;
 
   players.push({ name: name, buy: 0, win: 0 });
-  updatePlayerLists();
   nameInput.value = "";
+
+  updateBuyList();
+  updateWinList();
 }
 
-function updatePlayerLists() {
+function updateBuyList() {
   const buyList = document.getElementById("buyList");
-  const winList = document.getElementById("winList");
   buyList.innerHTML = "";
-  winList.innerHTML = "";
 
   players.forEach((p, index) => {
-    // שורה לקנייה
-    const buyRow = document.createElement("div");
-    buyRow.innerHTML = `
-      ${p.name}: ${p.buy}
-      <button onclick="changeBuy(${index}, 1)">+1</button>
-      <button onclick="changeBuy(${index}, -1)">-1</button>
+    const row = document.createElement("div");
+    row.innerHTML = `
+      <strong>${p.name}</strong>
+      <button onclick="incBuy(${index}, 1)">+1</button>
+      <button onclick="incBuy(${index}, -1)">-1</button>
+      <span id="buy-${index}">סה"כ: ${p.buy}</span>
     `;
-    buyList.appendChild(buyRow);
-
-    // שורה לניצחון
-    const winRow = document.createElement("div");
-    winRow.innerHTML = `
-      ${p.name}: ${p.win}
-      <button onclick="changeWin(${index}, 1)">+1</button>
-      <button onclick="changeWin(${index}, -1)">-1</button>
-    `;
-    winList.appendChild(winRow);
+    buyList.appendChild(row);
   });
 }
 
-function changeBuy(index, amount) {
-  players[index].buy += amount;
-  updatePlayerLists();
+function updateWinList() {
+  const winList = document.getElementById("winList");
+  winList.innerHTML = "";
+
+  players.forEach((p, index) => {
+    const row = document.createElement("div");
+    row.innerHTML = `
+      <strong>${p.name}</strong>
+      <button onclick="incWin(${index}, 1)">+1</button>
+      <button onclick="incWin(${index}, -1)">-1</button>
+      <span id="win-${index}">סה"כ: ${p.win}</span>
+    `;
+    winList.appendChild(row);
+  });
 }
 
-function changeWin(index, amount) {
+function incBuy(index, amount) {
+  players[index].buy += amount;
+  document.getElementById(`buy-${index}`).innerText = `סה"כ: ${players[index].buy}`;
+}
+
+function incWin(index, amount) {
   players[index].win += amount;
-  updatePlayerLists();
+  document.getElementById(`win-${index}`).innerText = `סה"כ: ${players[index].win}`;
 }
 
 function showSettle() {
@@ -63,9 +65,8 @@ function showSettle() {
   document.getElementById("result").innerText = result;
 }
 
-// חושפים פונקציות ל־onclick
-window.startGame = startGame;
+// מאפשרים גישה מהכפתורים
 window.addPlayer = addPlayer;
-window.changeBuy = changeBuy;
-window.changeWin = changeWin;
+window.incBuy = incBuy;
+window.incWin = incWin;
 window.showSettle = showSettle;
