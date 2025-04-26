@@ -1,35 +1,3 @@
-<body>
-
-<!-- מסך פתיחה: רק כפתור -->
-<div id="startScreen">
-  <h2>ברוך הבא!</h2>
-  <p>לחץ כדי להתחיל משחק חדש:</p>
-  <button onclick="startGame()">התחל משחק חדש</button>
-</div>
-
-<!-- המסך הראשי: אחרי פתיחת משחק -->
-<div id="mainScreen" class="hidden">
-  <h2>רישום משתתף חדש</h2>
-  <input id="newPlayer" placeholder="שם">
-  <button onclick="addPlayer()">הוסף</button>
-  <hr>
-
-  <h2>קנייה</h2>
-  <select id="selBuy"></select>
-  <button onclick="incBuy(1)">+1</button>
-  <button onclick="incBuy(-1)">-1</button>
-  <hr>
-
-  <h2>ניצחון</h2>
-  <select id="selWin"></select>
-  <button onclick="incWin(1)">+1</button>
-  <button onclick="incWin(-1)">-1</button>
-  <hr>
-
-  <button onclick="showSettle()">חשב איזון</button>
-  <pre id="result"></pre>
-</div>
-
 <script>
 if (new URLSearchParams(location.search).has("game")) {
   document.getElementById("startScreen").classList.add("hidden");
@@ -37,9 +5,13 @@ if (new URLSearchParams(location.search).has("game")) {
 }
 
 function startGame() {
-  const randomGameId = Math.floor(1000 + Math.random() * 9000); // מספר אקראי 4 ספרות
-  location.href = "?game=" + randomGameId;
+  const startButton = document.querySelector("#startScreen button");
+  startButton.disabled = true;
+  startButton.innerText = "פותח משחק...";
+
+  setTimeout(() => {
+    const randomGameId = Math.floor(1000 + Math.random() * 9000);
+    location.href = "?game=" + randomGameId;
+  }, 1000); // עיכוב של שנייה אחת
 }
 </script>
-
-</body>
