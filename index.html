@@ -1,13 +1,13 @@
 <body>
 
-<!-- מסך פתיחה: כפתור אחד בלבד -->
+<!-- מסך פתיחה: רק כפתור -->
 <div id="startScreen">
   <h2>ברוך הבא!</h2>
   <p>לחץ כדי להתחיל משחק חדש:</p>
   <button onclick="startGame()">התחל משחק חדש</button>
 </div>
 
-<!-- המסך הראשי: ניהול כניסות וניצחונות -->
+<!-- המסך הראשי: אחרי פתיחת משחק -->
 <div id="mainScreen" class="hidden">
   <h2>רישום משתתף חדש</h2>
   <input id="newPlayer" placeholder="שם">
@@ -37,7 +37,7 @@ if (new URLSearchParams(location.search).has("game")) {
 }
 
 function startGame() {
-  const randomGameId = Math.floor(1000 + Math.random() * 9000); // מספר אקראי בין 1000 ל-9999
+  const randomGameId = Math.floor(1000 + Math.random() * 9000); // מספר אקראי 4 ספרות
   location.href = "?game=" + randomGameId;
 }
 </script>
