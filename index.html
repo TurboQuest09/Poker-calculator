@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>מאזן כניסות פוקר</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>מאזן כניסות פוקר</title>
 
-<!-- טעינת app.js -->
-<script type="module" src="app.js"></script>
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://js.sentry-cdn.com/adc594d872955186bff54c5cbe96fbec.min.js" crossorigin="anonymous"></script>
+  <script>
+    Sentry.init({
+      dsn: "https://adc594d872955186bff54c5cbe96fbec@o4509221272485888.ingest.us.sentry.io/4509221357617152",
+      tracesSampleRate: 1.0,
+    });
+  </script>
+
+  <script type="module" src="app.js"></script>
+
+  <style>
+    .hidden { display: none; }
+  </style>
 </head>
 
 <body>
- 
+
+<!-- מסך פתיחה -->
 <div id="startScreen">
   <h2>ברוך הבא!</h2>
   <p>לחץ כדי להתחיל משחק חדש:</p>
   <button onclick="startGame()">התחל משחק חדש</button>
 </div>
 
+<!-- מסך ניהול המשחק -->
 <div id="mainScreen" class="hidden">
   <h2>רישום משתתף חדש</h2>
   <input id="newPlayer" placeholder="שם">
@@ -24,31 +38,16 @@
   <hr>
 
   <h2>קנייה</h2>
-  <select id="selBuy"></select>
-  <button onclick="incBuy(1)">+1</button>
-  <button onclick="incBuy(-1)">-1</button>
+  <div id="buyList"></div>
   <hr>
 
   <h2>ניצחון</h2>
-  <select id="selWin"></select>
-  <button onclick="incWin(1)">+1</button>
-  <button onclick="incWin(-1)">-1</button>
+  <div id="winList"></div>
   <hr>
 
   <button onclick="showSettle()">חשב איזון</button>
   <pre id="result"></pre>
 </div>
-
-<style>
-  .hidden { display: none; }
-</style>
-
-<script>
-  function startGame() {
-    document.getElementById("startScreen").classList.add("hidden");
-    document.getElementById("mainScreen").classList.remove("hidden");
-  }
-</script>
 
 </body>
 </html>
