@@ -37,4 +37,46 @@
   <button onclick="addPlayer()">הוסף</button>
   <hr>
 
-  <h2>קנייה
+  <h2>קנייה</h2>
+  <select id="selBuy"></select>
+  <button onclick="incBuy(1)">+1</button>
+  <button onclick="incBuy(-1)">-1</button>
+  <hr>
+
+  <h2>ניצחון</h2>
+  <select id="selWin"></select>
+  <button onclick="incWin(1)">+1</button>
+  <button onclick="incWin(-1)">-1</button>
+  <hr>
+
+  <button onclick="showSettle()">חשב איזון</button>
+  <pre id="result"></pre>
+</div>
+
+<script>
+// קוד ניהול מסכים
+const urlParams = new URLSearchParams(location.search);
+const hasGame = urlParams.has("game");
+
+if (hasGame) {
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("mainScreen").classList.remove("hidden");
+} else {
+  document.getElementById("startScreen").classList.remove("hidden");
+  document.getElementById("mainScreen").classList.add("hidden");
+}
+
+function startGame() {
+  const startButton = document.querySelector("#startScreen button");
+  startButton.disabled = true;
+  startButton.innerText = "פותח משחק...";
+
+  setTimeout(() => {
+    const randomGameId = Math.floor(1000 + Math.random() * 9000); // מספר אקראי בין 1000 ל-9999
+    location.href = "?game=" + randomGameId;
+  }, 1000);
+}
+</script>
+
+</body>
+</html>
