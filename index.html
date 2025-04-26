@@ -1,7 +1,13 @@
 <script>
-if (new URLSearchParams(location.search).has("game")) {
+const urlParams = new URLSearchParams(location.search);
+const hasGame = urlParams.has("game");
+
+if (hasGame) {
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("mainScreen").classList.remove("hidden");
+} else {
+  document.getElementById("startScreen").classList.remove("hidden");
+  document.getElementById("mainScreen").classList.add("hidden");
 }
 
 function startGame() {
@@ -10,8 +16,8 @@ function startGame() {
   startButton.innerText = "פותח משחק...";
 
   setTimeout(() => {
-    const randomGameId = Math.floor(1000 + Math.random() * 9000);
+    const randomGameId = Math.floor(1000 + Math.random() * 9000); // מספר אקראי 4 ספרות
     location.href = "?game=" + randomGameId;
-  }, 1000); // עיכוב של שנייה אחת
+  }, 1000);
 }
 </script>
