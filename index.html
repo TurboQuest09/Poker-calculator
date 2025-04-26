@@ -1,22 +1,49 @@
-<!DOCTYPE html><html lang="he" dir="rtl"><head>
-<meta charset="UTF-8"><title>מאזן כניסות-פוקר</title>
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>מאזן כניסות-פוקר</title>
+
+<!-- טעינת עיצוב -->
 <link rel="stylesheet" href="style.css">
+
+<!-- טעינת ספריית Sentry -->
+<script src="https://js.sentry-cdn.com/adc594d872955186bff54c5cbe96fbec.min.js" crossorigin="anonymous"></script>
+
+<!-- חיבור ל-Sentry עם ה-DSN האישי שלך -->
+<script>
+  Sentry.init({
+    dsn: "https://adc594d872955186bff54c5cbe96fbec@o4509221272485888.ingest.us.sentry.io/4509221357617152",
+    integrations: [new Sentry.BrowserTracing()],
+    tracesSampleRate: 1.0,
+  });
+</script>
+
+<!-- טעינת לוגיקת האתר -->
 <script type="module" src="app.js"></script>
-</head><body>
+</head>
+
+<body>
+
 <h2>רישום משתתף חדש</h2>
 <input id="newPlayer" placeholder="שם">
-<button onclick="addPlayer()">הוסף</button><hr>
+<button onclick="addPlayer()">הוסף</button>
+<hr>
 
 <h2>קנייה</h2>
 <select id="selBuy"></select>
 <button onclick="incBuy(1)">+1</button>
-<button onclick="incBuy(-1)">-1</button><hr>
+<button onclick="incBuy(-1)">-1</button>
+<hr>
 
 <h2>ניצחון</h2>
 <select id="selWin"></select>
 <button onclick="incWin(1)">+1</button>
-<button onclick="incWin(-1)">-1</button><hr>
+<button onclick="incWin(-1)">-1</button>
+<hr>
 
 <button onclick="showSettle()">חשב איזון</button>
 <pre id="result"></pre>
-</body></html>
+
+</body>
+</html>
