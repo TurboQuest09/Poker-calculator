@@ -3,7 +3,7 @@ import { initializeApp } from
 import { getFirestore, doc, onSnapshot, setDoc }
  "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
-/* פרטי Firebase שלך */
+/* חיבור לפיירבייס שלך */
 const firebaseConfig = {
   apiKey: "AIzaSyBDXDiVPlT9Xc4-OGo9soTxmREtMR1gFHg",
   authDomain: "poker-eacf2.firebaseapp.com",
@@ -35,7 +35,7 @@ onSnapshot(ref, snap => {
 /* שמירה */
 function save() { setDoc(ref, { players: [...players.values()] }); }
 
-/* פונקציות גלובליות */
+/* פונקציות */
 window.addPlayer = () => {
   const n = val('newPlayer'); if (!n || players.has(n)) return;
   players.set(n, new Player(n)); save(); val('newPlayer', '');
@@ -49,7 +49,6 @@ function change(sel, field, d) {
   save();
 }
 
-/* חישוב איזון */
 window.showSettle = () => {
   const arr = [...players.values()];
   const payers = arr.filter(p => p.net < 0).sort((a, b) => a.net - b.net);
@@ -64,7 +63,6 @@ window.showSettle = () => {
   val('result', out.join('\n') || 'כולם מאוזנים 🎉');
 };
 
-/* עזרים */
 function redraw() {
   document.querySelectorAll('select').forEach(s => s.innerHTML = '');
   players.forEach(p => addOpt(p.name));
