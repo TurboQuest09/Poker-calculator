@@ -1,5 +1,4 @@
-// firebase.js — ייבוא מה-CDN
-import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, get, remove, update }
         from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
