@@ -13,17 +13,15 @@
 <!-- מסך פתיחה -->
 <div id="startScreen" class="centered">
   <h1>ברוך הבא!</h1>
-<img src="main_pic.png" alt="תמונה ראשית" style="max-width: 80%; margin: 5px auto; display: block;">
+
+  <img src="main_pic.png" alt="תמונה ראשית" style="max-width: 80%; margin: 10px auto; display: block;">
 
   <div>
     <button id="newGameButton" onclick="startNewGame()">🎯 התחל משחק חדש</button>
     <button id="logButton" onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
   </div>
 
-  <div id="gamesHeader">
-    <h2>משחקים קיימים:</h2>
-  </div>
-
+  <h2>משחקים קיימים:</h2>
   <div id="gamesList"></div>
 </div>
 
@@ -34,6 +32,7 @@
   <div class="add-player">
     <input id="newPlayer" placeholder="שם שחקן">
     <button onclick="addPlayer()">➕ הוסף שחקן</button>
+    <div id="nameError" class="error-text"></div>
   </div>
 
   <h3>קנייה</h3>
@@ -47,7 +46,6 @@
 
   <pre id="result"></pre>
 
-  <!-- פה יתווסף לוג הקניות -->
   <div id="buyLog"></div>
 </div>
 
