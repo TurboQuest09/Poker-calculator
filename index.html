@@ -13,11 +13,14 @@
 <!-- מסך פתיחה -->
 <div id="startScreen" class="centered">
   <h1>ברוך הבא!</h1>
-  <button id="newGameButton" onclick="startNewGame()">🎯 התחל משחק חדש</button>
+
+  <div>
+    <button id="newGameButton" onclick="startNewGame()">🎯 התחל משחק חדש</button>
+    <button id="logButton" onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
+  </div>
 
   <div id="gamesHeader">
     <h2>משחקים קיימים:</h2>
-    <button id="logButton" onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
   </div>
 
   <div id="gamesList"></div>
@@ -38,15 +41,13 @@
   <h3>ניצחון</h3>
   <div id="winList"></div>
 
-  <div id="totals">
-    <p>סה"כ קניות: <span id="totalBuys">0</span></p>
-    <p>סה"כ ניצחונות: <span id="totalWins">0</span></p>
-  </div>
-
   <button onclick="showSettle()">חשב איזון</button>
   <button onclick="copyResult()">📋 העתק סיכום</button>
 
   <pre id="result"></pre>
+
+  <!-- פה יתווסף לוג הקניות -->
+  <div id="buyLog"></div>
 </div>
 
 <!-- מסך לוג מחיקות -->
