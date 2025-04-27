@@ -8,21 +8,19 @@
 </head>
 <body>
 
-<!-- ───── מסך פתיחה ───── -->
 <div id="startScreen" class="centered">
   <h1>ברוך הבא!</h1>
   <img src="main_pic.png" alt="תמונה ראשית" style="max-width:80%;margin:10px auto;display:block">
 
   <div>
     <button id="newGameButton" onclick="startNewGame()">🎯 התחל משחק חדש</button>
-    <button onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
+    <button id="logButton"  onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
   </div>
 
   <h2>משחקים קיימים:</h2>
   <div id="gamesList"></div>
 </div>
 
-<!-- ───── מסך ניהול משחק ───── -->
 <div id="mainScreen" class="hidden centered">
   <h2>ניהול משחק</h2>
 
@@ -44,7 +42,6 @@
   <pre id="result"></pre>
 </div>
 
-<!-- ───── מסך לוג מחיקות ───── -->
 <div id="logScreen" class="hidden centered">
   <h2>לוג מחיקות</h2>
   <div id="logsList"></div>
