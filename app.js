@@ -39,7 +39,6 @@ window.deleteGame = function(id) {
   if (confirm("האם אתה בטוח שברצונך למחוק את המשחק?")) {
     remove(ref(db, 'games/' + id));
 
-    // שמירת לוג מחיקה
     const now = new Date().toLocaleString('he-IL');
     push(ref(db, 'logs/deletions'), {
       gameId: id,
@@ -76,7 +75,7 @@ window.incWin = function(index, amount) {
   renderPlayers();
 };
 
-// שמירת מצב המשחק
+// שמירת משחק
 function saveGame() {
   if (currentGameId) {
     update(ref(db, 'games/' + currentGameId), {
@@ -85,7 +84,7 @@ function saveGame() {
   }
 }
 
-// הצגת השחקנים
+// הצגת רשימת שחקנים
 function renderPlayers() {
   const buyList = document.getElementById("buyList");
   const winList = document.getElementById("winList");
@@ -147,22 +146,22 @@ window.showSettle = function() {
   document.getElementById("result").innerText = result;
 };
 
-// העתקת הסיכום
+// העתקת סיכום
 window.copyResult = function() {
   const text = document.getElementById("result").innerText;
   navigator.clipboard.writeText(text).then(() => {
-    alert("הועתק!");
+    alert("📋 הסיכום הועתק!");
   });
 };
 
-// הצגת מסך משחק
+// מסך משחק
 function showGameScreen() {
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("mainScreen").classList.remove("hidden");
   document.getElementById("logScreen").classList.add("hidden");
 }
 
-// חזרה למסך הראשי
+// חזרה למסך ראשי
 window.showStartScreen = function() {
   document.getElementById("startScreen").classList.remove("hidden");
   document.getElementById("mainScreen").classList.add("hidden");
@@ -187,12 +186,12 @@ window.showLogScreen = function() {
         logsList.appendChild(div);
       });
     } else {
-      logsList.innerHTML = "אין מחיקות עד כה.";
+      logsList.innerHTML = "אין מחיקות.";
     }
   });
 };
 
-// טעינת משחקים למסך הראשי
+// טעינת רשימת משחקים
 function loadGamesList() {
   const gamesList = document.getElementById("gamesList");
   onValue(ref(db, 'games'), (snapshot) => {
