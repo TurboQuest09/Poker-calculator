@@ -165,22 +165,26 @@ function playerRow(p, field, idx) {
 /* לוג פעולות במשחק */
 function renderActionLog() {
   const pre = $("#actionLog");
+
   onValue(ref(db, `games/${currentGameId}/actions`), (snap) => {
     const arr = snap.val() ? Object.values(snap.val()) : [];
+
     pre.textContent = arr
-         .map(a => {
-        const d  = new Date(a.time);                         // ← אובייקט תאריך
-        const dt = d.toLocaleDateString("he-IL");            // תאריך 27/04/2025
-        const tm = d.toLocaleTimeString("he-IL");            // שעה   21:52:06
-        return `${dt} ${tm} | ${a.player} | ` +
+      .map(a => {
+        const d  = new Date(a.time);
+        const dt = d.toLocaleDateString("he-IL");  // 27/04/2025
+        const tm = d.toLocaleTimeString("he-IL");  // 21:52:06
+
+        /*  ‎\u200E = LTR-Mark  מכריח את התאריך-שעה להופיע בשלמות גם במסכים צרים */
+        return `\u200E${dt} ${tm} | ${a.player} | ` +
                `${a.delta > 0 ? "+" : ""}${a.delta} ` +
                `${a.type === "buy" ? "קנייה" : "ניצחון"}`;
       })
-
-      .reverse()
-      .join("\n");
+      .reverse()             // אחרון-קודם למעלה
+      .join("\n");           // שורות מרובות
   });
 }
+
 
 /* חישוב איזון + העתקה */
 function showSettle() {
