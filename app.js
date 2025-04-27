@@ -1,19 +1,49 @@
-import { db, ref, push, onValue, get, remove } from "./firebase.js";
+import { db, ref, push, onValue, get, remove, set, off } from "./firebase.js";
 
 /* ───── משתנים ───── */
 let players = [];
 let currentGameId = null;
+let playersListener = null;            // נשתמש כדי לנתק מאזין ישן
+const lastSavedId = localStorage.getItem("currentGameId");
 
-/* ───── טעינת רשימת משחקים מיד עם הפתיחה ───── */
+/* ───── מסך הבית ורשימת משחקים ───── */
 loadGamesList();
+toggleScreens("start");
 
 /* ───── יצירת משחק חדש ───── */
 function startNewGame() {
   const newRef = push(ref(db, "games"), { created: Date.now() });
   currentGameId = newRef.key;
+  localStorage.setItem("currentGameId", currentGameId);
   players = [];
+  savePlayers();                       // כותב players=[] ל-DB
+  attachPlayersListener();             // מאזין חי
   toggleScreens("main");
   updateLists();
+}
+
+/* ───── פתיחת משחק קיים ───── */
+function openGame(id) {
+  detachPlayersListener();             // שלא יהיו מאזינים כפולים
+  currentGameId = id;
+  localStorage.setItem("currentGameId", id);
+  attachPlayersListener();             // ימשוך ומאזין בזמן-אמת
+  toggleScreens("main");
+}
+
+/* ───── מאזין בזמן-אמת לשחקנים ───── */
+function attachPlayersListener() {
+  if (!currentGameId) return;
+  const pRef = ref(db, `games/${currentGameId}/players`);
+  playersListener = pRef;
+  onValue(pRef, snap => {
+    players = snap.exists() ? Object.values(snap.val()) : [];
+    updateLists();
+  });
+}
+function detachPlayersListener() {
+  if (playersListener) off(playersListener);
+  playersListener = null;
 }
 
 /* ───── הוספת שחקן ───── */
@@ -25,116 +55,132 @@ function addPlayer() {
   if (players.some(p => p.name === name)) { err.textContent = "⚠️ השם כבר קיים!"; return; }
   err.textContent = "";
   players.push({ name, buy: 0, win: 0 });
-  updateLists();
   input.value = "";
+  savePlayers();
 }
 
-/* ───── עדכון קנייה/ניצחון ───── */
+/* ───── שינוי ניקוד ───── */
 function adjustScore(i, type, d) {
   if (type === "buy") players[i].buy += d;
-  else                 players[i].win += d;
-  updateLists();
+  else                players[i].win += d;
+  savePlayers();
 }
 
-/* ───── יצירת שורת שחקן ───── */
-function row(i, type) {
-  const p = players[i];
-  const div = document.createElement("div");
-  div.className = "playerRow";
-
-  const name = document.createElement("span");
-  name.className = "playerName";
-  name.textContent = p.name;
-
-  const count = document.createElement("span");
-  count.className = "countSpan";
-  count.textContent = type === "buy" ? p.buy : p.win;
-
-  const minus = document.createElement("button");
-  minus.textContent = "-1";
-  minus.onclick = () => adjustScore(i, type, -1);
-
-  const plus = document.createElement("button");
-  plus.textContent = "+1";
-  plus.onclick  = () => adjustScore(i, type, 1);
-
-  div.append(name, count, minus, plus);
-  return div;
+/* ───── כתיבה ל-Firebase ───── */
+function savePlayers() {
+  if (!currentGameId) return;
+  const obj = {};
+  players.forEach((p, i) => obj[i] = p);
+  set(ref(db, `games/${currentGameId}/players`), obj);
 }
 
-/* ───── ריענון רשימות + סה״כ ───── */
+/* ───── ריענון UI ───── */
 function updateLists() {
-  ["buy","win"].forEach(type => {
+  ["buy", "win"].forEach(type => {
     const list = document.getElementById(type + "List");
     list.innerHTML = "";
     players.forEach((_, i) => list.appendChild(row(i, type)));
-
-    /* שורת סיכום */
-    const total = players.reduce((s,p)=> s + (type==="buy"?p.buy:p.win), 0);
-    const totalDiv = document.createElement("div");
-    totalDiv.className = "totalRow";
-    totalDiv.textContent = `סה״כ ${type==="buy"?"קניות":"ניצחונות"}: ‎${total}`;
-    list.appendChild(totalDiv);
+    const total = players.reduce((s, p) => s + (type === "buy" ? p.buy : p.win), 0);
+    const sum = document.createElement("div");
+    sum.className = "totalRow";
+    sum.textContent = `סה״כ ${type === "buy" ? "קניות" : "ניצחונות"}: ‎${total}`;
+    list.appendChild(sum);
   });
 }
 
-/* ───── חישוב “מי-מעביר-למי” ───── */
-function showSettle() {
-  const net = players.map(p => ({ name:p.name, bal:p.win - p.buy }));
-  const owes=[], gets=[];
-  net.forEach(p => p.bal<0 ? owes.push({...p}) : gets.push({...p}));
-  owes.sort((a,b)=>a.bal-b.bal);
-  gets.sort((a,b)=>b.bal-a.bal);
-  const lines=[];
-  while (owes.length && gets.length){
-    const o = owes[0], g = gets[0];
-    const pay = Math.min(-o.bal, g.bal);
-    lines.push(`${o.name} ➜ ${g.name}: ‎${pay}`);
-    o.bal += pay; g.bal -= pay;
-    if (o.bal===0) owes.shift();
-    if (g.bal===0) gets.shift();
-  }
-  document.getElementById("result").textContent =
-    lines.length ? lines.join("\n") : "אין חובות – כולם מאוזנים.";
+/* ───── שורת שחקן ───── */
+function row(i, type) {
+  const p = players[i];
+  const div = document.createElement("div"); div.className = "playerRow";
+  div.innerHTML = `
+    <span class="playerName">${p.name}</span>
+    <span class="countSpan">${type === "buy" ? p.buy : p.win}</span>
+    <button>-1</button><button>+1</button>`;
+  const [minus, plus] = div.querySelectorAll("button");
+  minus.onclick = () => adjustScore(i, type, -1);
+  plus .onclick = () => adjustScore(i, type,  1);
+  return div;
 }
 
-/* ───── העתקה ללוח ───── */
+/* ───── סיכום איזון ───── */
+function showSettle() {
+  const purchases = players.map(p => `${p.name}: ${p.buy}`).join("\n");
+  const totalBuys = players.reduce((s, p) => s + p.buy, 0);
+
+  const owes = [], gets = [];
+  players.forEach(p => {
+    const bal = p.win - p.buy;
+    (bal < 0 ? owes : gets).push({ name: p.name, bal: Math.abs(bal) });
+  });
+  owes.sort((a, b) => b.bal - a.bal);
+  gets.sort((a, b) => b.bal - a.bal);
+
+  const moves = [];
+  while (owes.length && gets.length) {
+    const o = owes[0], g = gets[0];
+    const pay = Math.min(o.bal, g.bal);
+    moves.push(`${o.name} ➜ ${g.name}: ‎${pay}`);
+    o.bal -= pay; g.bal -= pay;
+    if (!o.bal) owes.shift();
+    if (!g.bal) gets.shift();
+  }
+
+  document.getElementById("result").textContent =
+`קניות:
+${purchases}
+סה״כ קניות: ‎${totalBuys}
+
+מאזן:
+${moves.length ? moves.join("\n") : "אין חובות – כולם מאוזנים."}`;
+}
 function copyResult() {
   navigator.clipboard.writeText(document.getElementById("result").textContent)
-    .catch(()=>alert("‎⚠️ לא הצלחתי להעתיק."))
+    .catch(() => alert("‎⚠️ העתקה נכשלה"));
 }
 
-/* ───── טעינת משחקים קיימים ───── */
+/* ───── רשימת משחקים ───── */
 function loadGamesList() {
-  onValue(ref(db,"games"), snap => {
+  onValue(ref(db, "games"), snap => {
     const wrap = document.getElementById("gamesList");
     wrap.innerHTML = "";
-    if (!snap.exists()) { wrap.textContent = "אין משחקים"; return; }
+    if (lastSavedId && snap.hasChild(lastSavedId)) {
+      const dt = new Date(snap.child(lastSavedId).val().created).toLocaleString("he-IL");
+      const btn = document.createElement("button");
+      btn.textContent = `🎯 המשך למשחק האחרון (${dt})`;
+      btn.style.background = "#17a2b8";
+      btn.onclick = () => openGame(lastSavedId);
+      wrap.appendChild(btn);
+    }
+    if (!snap.exists()) { wrap.append("אין משחקים"); return; }
     snap.forEach(child => {
-      const id  = child.key;
-      const div = document.createElement("div");
-      div.className = "gameItem";
-
+      const id = child.key;
       const label = "🃏 " + new Date(child.val().created).toLocaleString("he-IL");
-      const small = document.createElement("span");
-      small.textContent = label;
+      const div = document.createElement("div"); div.className = "gameItem";
 
-      const del  = document.createElement("button");
-      del.className = "delBtn";
-      del.textContent = "🗑️";
+      const span = document.createElement("span");
+      span.textContent = label; span.style.cursor = "pointer";
+      span.onclick = () => openGame(id);
+
+      const del = document.createElement("button");
+      del.className = "delBtn"; del.textContent = "🗑️";
       del.onclick = () => deleteGame(id, label);
 
-      div.append(small, del);
+      div.append(span, del);
       wrap.appendChild(div);
     });
   });
 }
 
 /* ───── מחיקה + לוג ───── */
-function deleteGame(id,label){
-  if (!confirm(`למחוק את המשחק "${label}"?`)) return;
-  remove(ref(db,`games/${id}`));
-  push(ref(db,"logs"),{when:Date.now(),label});
+function deleteGame(id, label) {
+  if (!confirm(`למחוק את "${label}"?`)) return;
+  remove(ref(db, `games/${id}`));
+  push(ref(db, "logs"), { when: Date.now(), label });
+  if (id === currentGameId) {
+    localStorage.removeItem("currentGameId");
+    detachPlayersListener();
+    toggleScreens("start");
+  }
 }
 
 /* ───── לוג מחיקות ───── */
@@ -142,23 +188,22 @@ function showLogScreen() {
   toggleScreens("log");
   const box = document.getElementById("logsList");
   box.innerHTML = "טוען...";
-  get(ref(db,"logs")).then(snap=>{
-    if (!snap.exists()){ box.textContent="אין מחיקות"; return; }
-    const list=[];
-    snap.forEach(c=>list.push(c.val()));
-    box.innerHTML = list.sort((a,b)=>b.when-a.when)
-      .map(l=>`🗑️ ‎${new Date(l.when).toLocaleString("he-IL")} – ${l.label}`)
+  get(ref(db, "logs")).then(s => {
+    if (!s.exists()) { box.textContent = "אין מחיקות"; return; }
+    const arr = []; s.forEach(c => arr.push(c.val()));
+    box.innerHTML = arr.sort((a, b) => b.when - a.when)
+      .map(l => `🗑️ ‎${new Date(l.when).toLocaleString("he-IL")} – ${l.label}`)
       .join("<br>");
   });
 }
 
-/* ───── מעבר מסכים ───── */
-function showStartScreen(){ toggleScreens("start"); }
-function toggleScreens(what){
-  document.getElementById("startScreen").classList.toggle("hidden", what!=="start");
-  document.getElementById("mainScreen").classList.toggle("hidden",  what!=="main");
-  document.getElementById("logScreen").classList.toggle("hidden",   what!=="log");
+/* ───── ניווט ───── */
+function toggleScreens(v) {
+  document.getElementById("startScreen").classList.toggle("hidden", v !== "start");
+  document.getElementById("mainScreen") .classList.toggle("hidden", v !== "main");
+  document.getElementById("logScreen")  .classList.toggle("hidden", v !== "log");
 }
+function showStartScreen() { toggleScreens("start"); }
 
 /* ───── חשיפה ל-HTML ───── */
 window.startNewGame    = startNewGame;
