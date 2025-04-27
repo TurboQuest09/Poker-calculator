@@ -192,7 +192,7 @@ function renderActionLog() {
         const d = new Date(a.time);
         const dt = d.toLocaleDateString("he-IL");
         const tm = d.toLocaleTimeString("he-IL");
-        return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | +${a.delta} קנייה`;
+return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ${(a.delta > 0 ? '+' : '')}${a.delta} קנייה`;
       })
       .reverse()
       .join("<br>");
