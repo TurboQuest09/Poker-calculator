@@ -2,75 +2,61 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>מאזן כניסות פוקר</title>
 
-  <!-- עיצוב -->
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Firebase (חובה לפני app.js) -->
+  <!-- Firebase config -->
   <script type="module" src="firebase.js"></script>
-
-  <!-- לוגיקה של האפליקציה -->
+  <!-- לוגיקה -->
   <script type="module" src="app.js"></script>
 </head>
+
 <body>
 
-<!-- ───── מסך פתיחה ───── -->
+<!-- מסך פתיחה -->
 <div id="startScreen" class="centered">
   <h1>ברוך הבא!</h1>
 
-  <!-- תמונה ראשית -->
-  <img src="main_pic.png"
-       alt="תמונה ראשית"
-       style="max-width: 80%; margin: 5px auto; display: block;" />
+  <button id="newGameBtn"      class="btn-primary">🎯 התחל משחק חדש</button>
+  <button id="logBtn"          class="btn-secondary">📋 לוג מחיקות</button>
 
-  <div class="button-group">
-    <button id="newGameButton" onclick="startNewGame()">🎯 התחל משחק חדש</button>
-    <button id="logButton" onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
-  </div>
-
-  <h2>משחקים קיימים:</h2>
+  <h2 id="gamesHeader">משחקים קיימים:</h2>
   <div id="gamesList"></div>
 </div>
 
-<!-- ───── מסך ניהול משחק ───── -->
+<!-- מסך ניהול משחק -->
 <div id="mainScreen" class="hidden centered">
   <h2>ניהול משחק</h2>
 
   <div class="add-player">
-    <input id="newPlayer" placeholder="שם שחקן" />
-    <button onclick="addPlayer()">➕ הוסף שחקן</button>
+    <button id="addPlayerBtn" class="btn-secondary">➕ הוסף שחקן</button>
+    <input  id="newPlayer" placeholder="שם שחקן" />
   </div>
 
   <h3>קנייה</h3>
   <div id="buyList"></div>
-  <div class="total">סה״כ קניות: <span id="totalBuy">0</span></div>
+  <div class="totals">סה״כ קניות: <span id="totalBuy">0</span></div>
 
   <h3>ניצחון</h3>
   <div id="winList"></div>
-  <div class="total">סה״כ ניצחונות: <span id="totalWin">0</span></div>
+  <div class="totals">סה״כ ניצחונות: <span id="totalWin">0</span></div>
 
-  <button class="big-button" onclick="showSettle()">חשב איזון</button>
-  <button class="copy-button" onclick="copyResult()">📋 העתק סיכום</button>
+  <pre id="actionLog"></pre>
+
+  <div class="button-bar">
+    <button id="copyBtn"  class="btn-secondary">📋 העתק סיכום</button>
+    <button id="settleBtn" class="btn-primary">חשב איזון</button>
+  </div>
 
   <pre id="result"></pre>
-
-  <!-- לוג פעולות ↓ -->
-  <h3>לוג פעולות</h3>
-  <table id="buyLog">
-    <thead>
-      <tr><th>תאריך</th><th>שעה</th><th>שחקן</th><th>פעולה</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
 </div>
 
-<!-- ───── מסך לוג מחיקות ───── -->
+<!-- מסך לוג מחיקות -->
 <div id="logScreen" class="hidden centered">
   <h2>לוג מחיקות</h2>
   <div id="logsList"></div>
-  <button onclick="showStartScreen()">⬅️ חזרה למסך הראשי</button>
+  <button id="backBtn" class="btn-secondary">⬅️ חזרה</button>
 </div>
 
 </body>
