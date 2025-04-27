@@ -1,88 +1,61 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.centered {
+  margin-top: 40px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#newGameButton {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 20px;
+  border: none;
+  border-radius: 8px;
+}
+
+#logButton {
+  background-color: #2196F3;
+  color: white;
+  font-size: 14px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  margin-left: 10px;
+}
+
+#gamesHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#gamesList button {
+  margin: 5px;
+  padding: 6px 12px;
+}
+
+.add-player {
+  margin-bottom: 20px;
+}
+
+pre {
+  text-align: right;
+  background-color: #f5f5f5;
   padding: 10px;
-  max-width: 600px;
-  margin: auto;
-  background: #fff;
+  direction: rtl;
 }
 
 .hidden {
   display: none;
-}
-
-h1, h2 {
-  text-align: center;
-}
-
-.form-group {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-input {
-  flex: 1;
-  padding: 8px;
-  font-size: 1em;
-}
-
-button {
-  padding: 8px 12px;
-  font-size: 1em;
-  cursor: pointer;
-}
-
-hr {
-  margin: 20px 0;
-}
-
-.player-list {
-  margin-bottom: 10px;
-}
-
-.player-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  background: #f9f9f9;
-  padding: 8px;
-  border-radius: 6px;
-}
-
-.buttons button {
-  margin: 0 2px;
-}
-
-.total {
-  text-align: left;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-.big-button {
-  width: 100%;
-  background: #4CAF50;
-  color: white;
-  margin-top: 10px;
-  border: none;
-  border-radius: 6px;
-}
-
-.copy-button {
-  width: 100%;
-  background: #2196F3;
-  color: white;
-  margin-top: 10px;
-  border: none;
-  border-radius: 6px;
-}
-
-pre {
-  background: #f2f2f2;
-  padding: 10px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  border-radius: 6px;
-  margin-top: 10px;
 }
