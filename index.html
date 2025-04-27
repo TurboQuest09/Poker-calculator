@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>מאזן כניסות פוקר</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- Firebase -->
   <script type="module" src="firebase.js"></script>
-
-  <!-- קובץ עבודה -->
   <script type="module" src="app.js"></script>
 </head>
 <body>
@@ -17,7 +13,10 @@
 <!-- מסך פתיחה -->
 <div id="startScreen">
   <h1>ברוך הבא!</h1>
-  <button onclick="startNewGame()">התחל משחק חדש</button>
+  <div class="button-group">
+    <button onclick="startNewGame()">התחל משחק חדש</button>
+    <button onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
+  </div>
 
   <h2>משחקים קיימים:</h2>
   <div id="gamesList"></div>
@@ -42,6 +41,13 @@
   <button onclick="copyResult()">📋 העתק סיכום</button>
 
   <pre id="result"></pre>
+</div>
+
+<!-- מסך לוג מחיקות -->
+<div id="logScreen" class="hidden">
+  <h2>לוג מחיקות</h2>
+  <div id="logsList"></div>
+  <button onclick="showStartScreen()">⬅️ חזרה למסך הראשי</button>
 </div>
 
 </body>
