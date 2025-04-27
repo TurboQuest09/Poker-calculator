@@ -1,43 +1,43 @@
 import { db, ref, push, onValue, get, remove, set, off } from "./firebase.js";
 
-/* ───── מצב גלובלי ───── */
-let players = [];
-let currentGameId = null;
-let playersListener = null;              // כדי לנתק מאזין ישן
-const lastSavedId = localStorage.getItem("currentGameId");
+/* ───── מצב ───── */
+let players=[];
+let currentGameId=null;
+let playersListener=null;
+const lastSavedId=localStorage.getItem("currentGameId");
 
 /* ───── מסך פתיחה ───── */
 loadGamesList();
 toggleScreens("start");
 
-/* ───── יצירת משחק חדש ───── */
+/* ───── משחק חדש ───── */
 function startNewGame(){
-  const newRef = push(ref(db,"games"),{created:Date.now()});
-  currentGameId = newRef.key;
+  const newRef=push(ref(db,"games"),{created:Date.now()});
+  currentGameId=newRef.key;
   localStorage.setItem("currentGameId",currentGameId);
   players=[];
-  savePlayers();           // כותב []
-  attachPlayersListener(); // מאזין בזמן-אמת
+  savePlayers();
+  attachPlayersListener();
   toggleScreens("main");
   updateLists();
 }
 
 /* ───── פתיחת משחק קיים ───── */
 function openGame(id){
-  detachPlayersListener();         // אם פתוח אחר
+  detachPlayersListener();
   currentGameId=id;
   localStorage.setItem("currentGameId",id);
   attachPlayersListener();
   toggleScreens("main");
 }
 
-/* ───── מאזין ל-players בזמן-אמת ───── */
+/* ───── מאזין players ───── */
 function attachPlayersListener(){
   if(!currentGameId) return;
-  const pRef = ref(db,`games/${currentGameId}/players`);
+  const pRef=ref(db,`games/${currentGameId}/players`);
   playersListener=pRef;
   onValue(pRef,snap=>{
-    players = snap.exists() ? Object.values(snap.val()) : [];
+    players=snap.exists()?Object.values(snap.val()):[];
     updateLists();
   });
 }
@@ -49,8 +49,8 @@ function detachPlayersListener(){
 /* ───── הוספת שחקן ───── */
 function addPlayer(){
   const input=document.getElementById("newPlayer");
-  const name =input.value.trim();
-  const err  =document.getElementById("nameError");
+  const name=input.value.trim();
+  const err=document.getElementById("nameError");
   if(!name) return;
   if(players.some(p=>p.name===name)){err.textContent="⚠️ השם כבר קיים!";return;}
   err.textContent="";
@@ -66,14 +66,14 @@ function adjustScore(i,type,d){
   savePlayers();
 }
 
-/* ───── כתיבה ל-Firebase ───── */
+/* ───── שמירה ל-DB ───── */
 function savePlayers(){
   if(!currentGameId) return;
   const obj={}; players.forEach((p,i)=>obj[i]=p);
   set(ref(db,`games/${currentGameId}/players`),obj);
 }
 
-/* ───── UI רשימות ───── */
+/* ───── UI ───── */
 function updateLists(){
   ["buy","win"].forEach(type=>{
     const list=document.getElementById(type+"List");
@@ -99,7 +99,7 @@ function row(i,type){
   return div;
 }
 
-/* ───── חישוב איזון ───── */
+/* ───── איזון ───── */
 function showSettle(){
   const purchases=players.map(p=>`${p.name}: ${p.buy}`).join("\n");
   const totalBuys=players.reduce((s,p)=>s+p.buy,0);
@@ -109,9 +109,7 @@ function showSettle(){
     const bal=p.win-p.buy;
     (bal<0?owes:gets).push({name:p.name,bal:Math.abs(bal)});
   });
-  owes.sort((a,b)=>b.bal-a.bal);
-  gets.sort((a,b)=>b.bal-a.bal);
-
+  owes.sort((a,b)=>b.bal-a.bal); gets.sort((a,b)=>b.bal-a.bal);
   const moves=[];
   while(owes.length&&gets.length){
     const o=owes[0],g=gets[0];
@@ -121,7 +119,6 @@ function showSettle(){
     if(!o.bal) owes.shift();
     if(!g.bal) gets.shift();
   }
-
   document.getElementById("result").textContent=
 `קניות:
 ${purchases}
@@ -141,10 +138,8 @@ function loadGamesList(){
     const wrap=document.getElementById("gamesList");
     wrap.innerHTML="";
 
-    /* כפתור חזרה למשחק האחרון */
     if(lastSavedId && snap.hasChild(lastSavedId)){
-      const dt=new Date(snap.child(lastSavedId).val().created)
-                 .toLocaleString("he-IL");
+      const dt=new Date(snap.child(lastSavedId).val().created).toLocaleString("he-IL");
       const btn=document.createElement("button");
       btn.textContent=`🎯 המשך למשחק האחרון (${dt})`;
       btn.style.background="#17a2b8";
@@ -159,8 +154,7 @@ function loadGamesList(){
       const label="🃏 "+new Date(child.val().created).toLocaleString("he-IL");
 
       const row=document.createElement("div");
-      row.className="gameItem";
-      row.onclick=()=>openGame(id);             /* ← כל השורה לחיצה */
+      row.className="gameItem"; row.onclick=()=>openGame(id);
 
       const span=document.createElement("span");
       span.textContent=label;
@@ -210,9 +204,9 @@ function toggleScreens(v){
 function showStartScreen(){toggleScreens("start");}
 
 /* ───── חשיפה ל-HTML ───── */
-window.startNewGame    = startNewGame;
-window.addPlayer       = addPlayer;
-window.showSettle      = showSettle;
-window.copyResult      = copyResult;
-window.showLogScreen   = showLogScreen;
-window.showStartScreen = showStartScreen;
+window.startNewGame=startNewGame;
+window.addPlayer=addPlayer;
+window.showSettle=showSettle;
+window.copyResult=copyResult;
+window.showLogScreen=showLogScreen;
+window.showStartScreen=showStartScreen;
