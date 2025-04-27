@@ -1,36 +1,31 @@
-body{font-family:Arial,sans-serif;text-align:center;margin:0;padding:0}
-.centered{margin-top:30px}
-.hidden{display:none}
-
-button{margin:8px;padding:12px 24px;font-size:16px;cursor:pointer;
-       border:none;border-radius:8px;background:#4CAF50;color:#fff}
-button:hover{background:#45a049}
-#newGameButton{background:#007BFF;font-size:20px;padding:15px 30px}
-#newGameButton:hover{background:#0056b3}
-
-input{padding:10px;font-size:16px;margin:8px}
-pre{text-align:right;background:#f5f5f5;padding:10px;direction:rtl;overflow-x:auto}
-.error-text{color:red;font-size:14px;margin-top:5px}
-
-.playerRow{display:flex;align-items:center;justify-content:right;margin:10px 0;gap:10px}
-.playerName{font-weight:bold;font-size:18px}
-.countSpan{min-width:38px;text-align:center;display:inline-block}
-.playerRow button{width:40px;height:40px;font-size:16px}
-
-.totalRow{font-weight:bold;border-top:1px solid #999;padding-top:6px;margin-top:8px}
-
-.gameItem{
-  display:flex;align-items:center;justify-content:space-between;
-  border:1px solid #ddd;border-radius:6px;padding:6px 10px;margin:5px auto;
-  max-width:340px;
-  cursor:pointer;
+/* בסיס */
+body {
+  font-family: Arial, sans-serif;
+  padding: 10px;
+  max-width: 600px;
+  margin: auto;
+  background: #fff;
 }
-.delBtn{background:#dc3545}
-.delBtn:hover{background:#b02a37}
 
-@media (max-width:600px){
-  button{width:auto;font-size:18px;margin:10px 5px}
-  input{width:90%;margin:10px auto}
-  img{max-width:90%}
-  .playerRow button{width:35px;height:35px;font-size:15px}
-}
+.hidden { display: none; }
+.centered { text-align: center; }
+
+h1, h2 { text-align: center; }
+
+.add-player,
+.button-group     { display: flex; justify-content: center; gap: 12px; margin: 10px 0; }
+
+input  { padding: 8px; font-size: 1em; }
+button { padding: 8px 14px; font-size: 1em; cursor: pointer; border-radius: 6px; }
+
+.big-button  { width: 48%; background:#4CAF50; color:#fff; border:none; }
+.copy-button { width: 48%; background:#2196F3; color:#fff; border:none; }
+
+.player-row { display:flex; align-items:center; gap:8px; justify-content:center; margin:6px 0; }
+.player-row span.value { width:32px; text-align:center; }
+
+.total { font-weight:bold; margin:8px 0; }
+
+table#buyLog { width:100%; border-collapse:collapse; margin-top:10px; font-size:0.9em; }
+table#buyLog th, table#buyLog td { border:1px solid #ccc; padding:4px; }
+table#buyLog th { background:#f2f2f2; }
