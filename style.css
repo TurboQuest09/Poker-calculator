@@ -1,102 +1,31 @@
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-}
+/* בסיס */
+body{font-family:Arial,sans-serif;text-align:center;margin:0;padding:0}
+.centered{margin-top:30px}
+.hidden{display:none}
+button{margin:8px;padding:12px 24px;font-size:16px;cursor:pointer;border:none;border-radius:8px;background:#4CAF50;color:#fff}
+button:hover{background:#45a049}
+#newGameButton{background:#007BFF;font-size:20px;padding:15px 30px}
+#newGameButton:hover{background:#0056b3}
+input{padding:10px;font-size:16px;margin:8px}
+pre{text-align:right;background:#f5f5f5;padding:10px;direction:rtl;overflow-x:auto}
+.error-text{color:red;font-size:14px;margin-top:5px}
 
-.centered {
-  margin-top: 30px;
-}
+/* שורה של שחקן */
+.playerRow{display:flex;align-items:center;justify-content:right;margin:10px 0;gap:10px}
+.playerName{font-weight:bold;font-size:18px}
+.playerRow button{width:40px;height:40px;font-size:16px}
 
-button {
-  margin: 8px;
-  padding: 12px 24px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  background-color: #4CAF50;
-  color: white;
-}
+/* פריטי משחק + כפתור מחיקה */
+.gameItem{display:flex;align-items:center;justify-content:space-between;
+          border:1px solid #ddd;border-radius:6px;padding:6px 10px;margin:5px auto;max-width:300px}
+.delBtn{background:#dc3545}
+.delBtn:hover{background:#b02a37}
 
-button:hover {
-  background-color: #45a049;
-}
-
-#newGameButton {
-  background-color: #007BFF;
-  font-size: 20px;
-  padding: 15px 30px;
-}
-
-#newGameButton:hover {
-  background-color: #0056b3;
-}
-
-input {
-  padding: 10px;
-  font-size: 16px;
-  margin: 8px;
-}
-
-pre {
-  text-align: right;
-  background-color: #f5f5f5;
-  padding: 10px;
-  direction: rtl;
-  overflow-x: auto;
-}
-
-.hidden {
-  display: none;
-}
-
-.error-text {
-  color: red;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-/* עיצוב שם שחקן + כפתורים */
-.playerRow {
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  margin: 10px 0;
-  gap: 10px;
-}
-
-.playerName {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.playerRow button {
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
-}
-
-/* התאמה לטלפון */
-@media (max-width: 600px) {
-  button {
-    width: auto;
-    font-size: 18px;
-    margin: 10px 5px;
-  }
-
-  input {
-    width: 90%;
-    margin: 10px auto;
-  }
-
-  img {
-    max-width: 90%;
-  }
-
-  .playerRow {
-    flex-wrap: nowrap;
-    justify-content: right;
-  }
+/* מובייל */
+@media (max-width:600px){
+  button{width:auto;font-size:18px;margin:10px 5px}
+  input{width:90%;margin:10px auto}
+  img{max-width:90%}
+  .playerRow{flex-wrap:nowrap;justify-content:right}
+  .playerRow button{width:35px;height:35px;font-size:15px}
 }
