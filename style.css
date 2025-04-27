@@ -1,26 +1,25 @@
-/* בסיס */
-body{font-family:Arial,Helvetica,sans-serif;text-align:center;margin:0}
-.centered{margin:20px}
-.hidden{display:none}
-h1,h2{margin:10px 0}
-img.hero{max-width:80%;border-radius:8px;margin:10px auto;display:block}
-
-/* כפתורים */
-button{padding:10px 20px;margin:6px;font-size:16px;border:0;border-radius:8px;color:#fff;cursor:pointer}
-.big{font-size:18px}
-.blue{background:#007bff} .blue:hover{background:#005bbd}
-.green{background:#4caf50} .green:hover{background:#3c8d41}
-
-/* שורה של שחקן */
-.row{display:flex;align-items:center;justify-content:right;gap:10px;margin:6px 0}
-.row button{width:40px;height:40px;padding:0;background:#4caf50}
-.name{font-weight:bold}
-
-/* הודעת שגיאה */
-.error{color:red;font-size:14px;min-height:18px}
-
-/* רספונסיבי לטלפון */
-@media(max-width:600px){
-  button{width:auto;font-size:18px}
-  img.hero{max-width:95%}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  padding:10px;max-width:600px;margin:auto;background:#fff
 }
+.hidden{display:none}
+h1,h2{text-align:center}
+
+.form-group{display:flex;gap:10px;margin-bottom:10px}
+input{flex:1;padding:8px;font-size:1em}
+
+button{padding:8px 12px;font-size:1em;cursor:pointer;border:0;border-radius:6px;background:#4caf50;color:#fff}
+button:hover{background:#419b45}
+
+hr{margin:20px 0}
+
+.player-list{margin-bottom:10px}
+.player-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;background:#f9f9f9;padding:8px;border-radius:6px}
+.buttons button{margin:0 2px}
+
+.total{text-align:left;margin-top:10px;font-weight:bold}
+
+.big-button{width:100%;background:#4caf50;color:#fff;margin-top:10px}
+.copy-button{width:100%;background:#2196f3;color:#fff;margin-top:10px}
+
+pre{background:#f2f2f2;padding:10px;white-space:pre-wrap;word-break:break-word;border-radius:6px;margin-top:10px}
