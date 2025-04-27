@@ -1,113 +1,116 @@
 let players = [];
 
-window.startGame = function() {
-  document.getElementById("startScreen").classList.add("hidden");
-  document.getElementById("mainScreen").classList.remove("hidden");
-};
-
-window.addPlayer = function() {
+function addPlayer() {
   const nameInput = document.getElementById("newPlayer");
   const name = nameInput.value.trim();
   if (!name) return;
 
   players.push({ name: name, buy: 0, win: 0 });
-  updateUI();
   nameInput.value = "";
-};
+  updatePlayers();
+  updateTotals();
+}
 
-window.incBuy = function(index, amount) {
-  players[index].buy += amount;
-  updateUI();
-};
-
-window.incWin = function(index, amount) {
-  players[index].win += amount;
-  updateUI();
-};
-
-window.showSettle = function() {
-  let result = "סיכום קניות:\n";
-  let totalBuy = 0;
-
-  players.forEach(p => {
-    result += `${p.name}: ${p.buy}\n`;
-    totalBuy += p.buy;
-  });
-
-  result += `\nסה"כ קניות: ${totalBuy}\n\n`;
-  result += "מאזן:\n";
-
-  const balances = players.map(p => ({ name: p.name, balance: p.win - p.buy }));
-
-  balances.forEach(b => {
-    result += `${b.name}: ${b.balance}\n`;
-  });
-
-  // חישוב תשלומים
-  result += "\nתשלומים:\n";
-  const debtors = balances.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
-  const creditors = balances.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
-
-  let i = 0, j = 0;
-  while (i < debtors.length && j < creditors.length) {
-    const debtor = debtors[i];
-    const creditor = creditors[j];
-    const amount = Math.min(-debtor.balance, creditor.balance);
-
-    result += `${debtor.name} משלם ${amount} ל${creditor.name}\n`;
-
-    debtor.balance += amount;
-    creditor.balance -= amount;
-
-    if (debtor.balance === 0) i++;
-    if (creditor.balance === 0) j++;
-  }
-
-  document.getElementById("result").innerText = result;
-};
-
-window.copyResult = function() {
-  const text = document.getElementById("result").innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    alert("הועתק!");
-  });
-};
-
-function updateUI() {
+function updatePlayers() {
   const buyList = document.getElementById("buyList");
   const winList = document.getElementById("winList");
-  const totalBuy = document.getElementById("totalBuy");
-  const totalWin = document.getElementById("totalWin");
-
   buyList.innerHTML = "";
   winList.innerHTML = "";
 
-  let sumBuy = 0;
-  let sumWin = 0;
-
   players.forEach((p, index) => {
-    sumBuy += p.buy;
-    sumWin += p.win;
-
+    // קנייה
     const buyRow = document.createElement("div");
     buyRow.className = "player-row";
     buyRow.innerHTML = `
-      ${p.name}: ${p.buy}
-      <button onclick="incBuy(${index}, 1)">+1</button>
-      <button onclick="incBuy(${index}, -1)">-1</button>
+      <span>${p.name}: ${p.buy}</span>
+      <div class="buttons">
+        <button onclick="incBuy(${index}, 1)">+1</button>
+        <button onclick="incBuy(${index}, -1)">-1</button>
+      </div>
     `;
     buyList.appendChild(buyRow);
 
+    // ניצחון
     const winRow = document.createElement("div");
     winRow.className = "player-row";
     winRow.innerHTML = `
-      ${p.name}: ${p.win}
-      <button onclick="incWin(${index}, 1)">+1</button>
-      <button onclick="incWin(${index}, -1)">-1</button>
+      <span>${p.name}: ${p.win}</span>
+      <div class="buttons">
+        <button onclick="incWin(${index}, 1)">+1</button>
+        <button onclick="incWin(${index}, -1)">-1</button>
+      </div>
     `;
     winList.appendChild(winRow);
   });
-
-  totalBuy.innerText = sumBuy;
-  totalWin.innerText = sumWin;
 }
+
+function incBuy(index, amount) {
+  players[index].buy += amount;
+  if (players[index].buy < 0) players[index].buy = 0;
+  updatePlayers();
+  updateTotals();
+}
+
+function incWin(index, amount) {
+  players[index].win += amount;
+  if (players[index].win < 0) players[index].win = 0;
+  updatePlayers();
+  updateTotals();
+}
+
+function updateTotals() {
+  const totalBuy = players.reduce((sum, p) => sum + p.buy, 0);
+  const totalWin = players.reduce((sum, p) => sum + p.win, 0);
+  document.getElementById("totalBuy").innerText = totalBuy;
+  document.getElementById("totalWin").innerText = totalWin;
+}
+
+function showSettle() {
+  let result = "";
+
+  players.forEach((p) => {
+    const balance = p.win - p.buy;
+    result += `${p.name}: ${balance}\n`;
+  });
+
+  result += "\n---\n";
+
+  let balances = players.map(p => ({ name: p.name, balance: p.win - p.buy }));
+  balances.sort((a, b) => a.balance - b.balance);
+
+  let i = 0, j = balances.length - 1;
+  while (i < j) {
+    let debtor = balances[i];
+    let creditor = balances[j];
+    let amount = Math.min(Math.abs(debtor.balance), creditor.balance);
+
+    if (amount > 0) {
+      result += `${debtor.name} משלם ${amount} ל${creditor.name}\n`;
+    }
+
+    balances[i].balance += amount;
+    balances[j].balance -= amount;
+
+    if (balances[i].balance === 0) i++;
+    if (balances[j].balance === 0) j--;
+  }
+
+  const totalBuy = players.reduce((sum, p) => sum + p.buy, 0);
+  result += `\nסה"כ קניות: ${totalBuy}\n`;
+
+  document.getElementById("result").innerText = result;
+}
+
+function copyResult() {
+  const text = document.getElementById("result").innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("📋 הסיכום הועתק!");
+  });
+}
+
+// חושפים פונקציות
+window.addPlayer = addPlayer;
+window.incBuy = incBuy;
+window.incWin = incWin;
+window.showSettle = showSettle;
+window.copyResult = copyResult;
