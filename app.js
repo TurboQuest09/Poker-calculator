@@ -2,6 +2,7 @@ import { db, ref, set, push, onValue, remove, update } from "./firebase.js";
 
 let players = [];
 let currentGameId = null;
+let buyLog = [];
 
 // התחלת משחק חדש
 window.startNewGame = function() {
@@ -17,8 +18,10 @@ window.startNewGame = function() {
   });
 
   players = [];
+  buyLog = [];
   showGameScreen();
   renderPlayers();
+  renderLog();
 };
 
 // טעינת משחק קיים
@@ -28,7 +31,9 @@ window.loadGame = function(id) {
   onValue(ref(db, 'games/' + id), (snapshot) => {
     const data = snapshot.val();
     players = data.players || [];
+    buyLog = [];
     renderPlayers();
+    renderLog();
   });
 
   showGameScreen();
@@ -63,8 +68,21 @@ window.addPlayer = function() {
 window.incBuy = function(index, amount) {
   players[index].buy += amount;
   if (players[index].buy < 0) players[index].buy = 0;
+
+  // הוספה ללוג
+  const now = new Date();
+  const date = now.toLocaleDateString('he-IL');
+  const time = now.toLocaleTimeString('he-IL');
+  buyLog.push({
+    date: date,
+    time: time,
+    name: players[index].name,
+    amount: amount > 0 ? '+1' : '-1'
+  });
+
   saveGame();
   renderPlayers();
+  renderLog();
 };
 
 // עדכון ניצחון
@@ -84,7 +102,7 @@ function saveGame() {
   }
 }
 
-// הצגת רשימת שחקנים כולל סה"כ קניות וניצחונות
+// הצגת רשימת שחקנים
 function renderPlayers() {
   const buyList = document.getElementById("buyList");
   const winList = document.getElementById("winList");
@@ -124,6 +142,23 @@ function renderPlayers() {
   const winTotalRow = document.createElement("div");
   winTotalRow.innerHTML = `<strong>סה"כ ניצחונות: ${sumWins}</strong>`;
   winList.appendChild(winTotalRow);
+}
+
+// הצגת לוג פעולות קנייה
+function renderLog() {
+  let logDiv = document.getElementById("buyLog");
+  if (!logDiv) {
+    logDiv = document.createElement("div");
+    logDiv.id = "buyLog";
+    document.getElementById("mainScreen").appendChild(logDiv);
+  }
+  logDiv.innerHTML = "<h3>לוג קניות</h3>";
+
+  buyLog.slice().reverse().forEach(item => {
+    const entry = document.createElement("div");
+    entry.textContent = `${item.date} | ${item.time} | ${item.name} | ${item.amount}`;
+    logDiv.appendChild(entry);
+  });
 }
 
 // חישוב סיכום
@@ -170,14 +205,13 @@ window.copyResult = function() {
   });
 };
 
-// מסך משחק
+// מעבר בין מסכים
 function showGameScreen() {
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("mainScreen").classList.remove("hidden");
   document.getElementById("logScreen").classList.add("hidden");
 }
 
-// חזרה למסך ראשי
 window.showStartScreen = function() {
   document.getElementById("startScreen").classList.remove("hidden");
   document.getElementById("mainScreen").classList.add("hidden");
