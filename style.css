@@ -24,12 +24,17 @@ button {
 .btn-primary   { background:#28a745; color:#fff; font-size:1.15rem; width:90%; }
 .btn-secondary { background:#007bff; color:#fff; font-size:0.95rem; }
 
-.add-player { display:flex; flex-direction: row-reverse; gap:6px; justify-content:center; }
+.add-player {
+  display:flex;
+  flex-direction: row-reverse;   /* קלט מימין, כפתור משמאל ב-RTL */
+  gap:6px;
+  justify-content:center;
+}
 
 /* רשימת שחקנים */
 .player-row {
   display: flex;
-  flex-direction: row-reverse;   /* שם לימין, כפתורים לשמאל */
+  flex-direction: row-reverse;   /* שם מימין, כפתורים משמאל */
   justify-content: space-between;
   align-items: center;
   gap: 6px;
@@ -49,11 +54,25 @@ button {
 
 .totals { font-weight:bold; margin-top:4px; }
 
-.button-bar { display:flex; gap:8px; justify-content:center; margin-top:12px; }
+.button-bar {
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin-top:12px;
+}
+
+/* לוג פעולות */
+.log-box {
+  margin-top: 8px;
+  background:#f9f9f9;
+  padding:6px;
+  border-radius:6px;
+  white-space:pre-wrap;
+}
 
 .hidden { display:none; }
 
-/* טבלת הלוג במסך מחיקות */
+/* לוג מחיקות */
 .log-item {
   display:flex;
   justify-content: space-between;
