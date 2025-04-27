@@ -47,22 +47,6 @@ window.deleteGame = function(id) {
   }
 };
 
-// שחזור משחק
-window.restoreGame = function(id) {
-  onValue(ref(db, 'logs/deletions/' + id), (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      const newId = new Date().getTime().toString();
-      set(ref(db, 'games/' + newId), {
-        date: data.time,
-        players: []
-      });
-      alert("משחק שוחזר!");
-      showStartScreen();
-    }
-  });
-};
-
 // הוספת שחקן
 window.addPlayer = function() {
   const nameInput = document.getElementById("newPlayer");
@@ -100,12 +84,10 @@ function saveGame() {
   }
 }
 
-// הצגת רשימת שחקנים
+// הצגת רשימת שחקנים כולל סה"כ קניות וניצחונות
 function renderPlayers() {
   const buyList = document.getElementById("buyList");
   const winList = document.getElementById("winList");
-  const totalBuys = document.getElementById("totalBuys");
-  const totalWins = document.getElementById("totalWins");
 
   buyList.innerHTML = "";
   winList.innerHTML = "";
@@ -121,6 +103,7 @@ function renderPlayers() {
       <button onclick="incBuy(${index},-1)">-1</button>
     `;
     buyList.appendChild(buyRow);
+    sumBuys += player.buy;
 
     const winRow = document.createElement("div");
     winRow.innerHTML = `
@@ -129,13 +112,18 @@ function renderPlayers() {
       <button onclick="incWin(${index},-1)">-1</button>
     `;
     winList.appendChild(winRow);
-
-    sumBuys += player.buy;
     sumWins += player.win;
   });
 
-  totalBuys.textContent = sumBuys;
-  totalWins.textContent = sumWins;
+  // הוספת שורה סה"כ קניות
+  const buyTotalRow = document.createElement("div");
+  buyTotalRow.innerHTML = `<strong>סה"כ קניות: ${sumBuys}</strong>`;
+  buyList.appendChild(buyTotalRow);
+
+  // הוספת שורה סה"כ ניצחונות
+  const winTotalRow = document.createElement("div");
+  winTotalRow.innerHTML = `<strong>סה"כ ניצחונות: ${sumWins}</strong>`;
+  winList.appendChild(winTotalRow);
 }
 
 // חישוב סיכום
@@ -211,7 +199,6 @@ window.showLogScreen = function() {
       Object.keys(data).reverse().forEach(id => {
         const div = document.createElement("div");
         div.textContent = `🗑️ ${data[id].time} - משחק ${data[id].gameId}`;
-        div.onclick = () => restoreGame(id);
         logsList.appendChild(div);
       });
     } else {
