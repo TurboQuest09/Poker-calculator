@@ -1,11 +1,16 @@
-// טעינת Firebase מה-CDN
-import { initializeApp }
-  from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+// --- Firebase חיבור ---
+// לפני השימוש החלף את הערכים באלו של הפרויקט שלך!
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-  getDatabase, ref, set, push, onValue, get, remove, update
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+  getDatabase,
+  ref,
+  push,
+  set,
+  onValue,
+  remove
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// הגדרות פרויקט שלך
+// ‼️ הכנס כאן את ההגדרות שלך
 const firebaseConfig = {
   apiKey: "AIzaSyBDXDiVPlT9Xc4-OGo9soTxmREtMR1gFHg",
   authDomain: "poker-eacf2.firebaseapp.com",
@@ -16,8 +21,6 @@ const firebaseConfig = {
   appId: "1:1023833535660:web:94ae3e2e0b8193d3625b09"
 };
 
-const app = initializeApp(firebaseConfig);
-const db  = getDatabase(app);
-
-// מייצא הכול (ללא off)
-export { db, ref, set, push, onValue, get, remove, update };
+export const app   = initializeApp(firebaseConfig);
+export const db    = getDatabase(app);
+export { ref, push, set, onValue, remove };
