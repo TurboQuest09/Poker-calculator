@@ -111,4 +111,48 @@ function loadGamesList() {
       const del  = document.createElement("button");
       del.className = "delBtn";
       del.textContent = "🗑️";
-      del.onclick = () => delete
+      del.onclick = () => deleteGame(id, small.textContent);
+
+      div.append(small, del);
+      wrap.appendChild(div);
+    });
+  });
+}
+
+/* ───── מחיקת משחק + לוג ───── */
+function deleteGame(id, label) {
+  if (!confirm(`למחוק את המשחק "${label}"?`)) return;
+  remove(ref(db,`games/${id}`));
+  push(ref(db,"logs"), { when: Date.now(), label });
+}
+
+/* ───── הצגת לוג מחיקות ───── */
+function showLogScreen() {
+  toggleScreens("log");
+  const box = document.getElementById("logsList");
+  box.innerHTML = "טוען...";
+  get(ref(db,"logs")).then(snap=>{
+    if (!snap.exists()){ box.textContent="אין מחיקות"; return; }
+    const data = [];
+    snap.forEach(c=>data.push(c.val()));
+    box.innerHTML = data.sort((a,b)=>b.when-a.when)
+      .map(l=>`🗑️ ‎${new Date(l.when).toLocaleString("he-IL")} – ${l.label}`)
+      .join("<br>");
+  });
+}
+
+/* ───── מעבר מסכים ───── */
+function showStartScreen(){ toggleScreens("start"); }
+function toggleScreens(what){
+  document.getElementById("startScreen").classList.toggle("hidden", what!=="start");
+  document.getElementById("mainScreen").classList.toggle("hidden",  what!=="main");
+  document.getElementById("logScreen").classList.toggle("hidden",   what!=="log");
+}
+
+/* ───── חשיפת פונקציות ל-HTML ───── */
+window.startNewGame = startNewGame;
+window.addPlayer    = addPlayer;
+window.showSettle   = showSettle;
+window.copyResult   = copyResult;
+window.showLogScreen= showLogScreen;
+window.showStartScreen = showStartScreen;
