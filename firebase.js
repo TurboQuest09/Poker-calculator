@@ -1,6 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, get, remove, update }
-        from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+// טעינת Firebase CDN
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import {
+  getDatabase, ref, set, push, onValue, get, remove, update, off
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBDXDiVPlT9Xc4-OGo9soTxmREtMR1gFHg",
@@ -15,4 +18,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
-export { db, ref, set, push, onValue, get, remove, update };
+export {
+  db, ref, set, push, onValue, get, remove, update, off   // ← כולל off
+};
