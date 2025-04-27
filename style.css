@@ -1,26 +1,102 @@
-/* בסיס */
-body{font-family:Arial,Helvetica,sans-serif;text-align:center;margin:0}
-.centered{margin:20px}
-.hidden{display:none}
-h1,h2{margin:10px 0}
-img.hero{max-width:80%;border-radius:8px;margin:10px auto;display:block}
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
 
-/* כפתורים */
-button{padding:10px 20px;margin:6px;font-size:16px;border:0;border-radius:8px;color:#fff;cursor:pointer}
-.big{font-size:18px}
-.blue{background:#007bff} .blue:hover{background:#005bbd}
-.green{background:#4caf50} .green:hover{background:#3c8d41}
+.centered {
+  margin-top: 30px;
+}
 
-/* שורה של שחקן */
-.row{display:flex;align-items:center;justify-content:right;gap:10px;margin:6px 0}
-.row button{width:40px;height:40px;padding:0;background:#4caf50}
-.name{font-weight:bold}
+button {
+  margin: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: #4CAF50;
+  color: white;
+}
 
-/* הודעת שגיאה */
-.error{color:red;font-size:14px;min-height:18px}
+button:hover {
+  background-color: #45a049;
+}
 
-/* רספונסיבי לטלפון */
-@media(max-width:600px){
-  button{width:auto;font-size:18px}
-  img.hero{max-width:95%}
+#newGameButton {
+  background-color: #007BFF;
+  font-size: 20px;
+  padding: 15px 30px;
+}
+
+#newGameButton:hover {
+  background-color: #0056b3;
+}
+
+input {
+  padding: 10px;
+  font-size: 16px;
+  margin: 8px;
+}
+
+pre {
+  text-align: right;
+  background-color: #f5f5f5;
+  padding: 10px;
+  direction: rtl;
+  overflow-x: auto;
+}
+
+.hidden {
+  display: none;
+}
+
+.error-text {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* עיצוב שם שחקן + כפתורים */
+.playerRow {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin: 10px 0;
+  gap: 10px;
+}
+
+.playerName {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.playerRow button {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+/* התאמה לטלפון */
+@media (max-width: 600px) {
+  button {
+    width: auto;
+    font-size: 18px;
+    margin: 10px 5px;
+  }
+
+  input {
+    width: 90%;
+    margin: 10px auto;
+  }
+
+  img {
+    max-width: 90%;
+  }
+
+  .playerRow {
+    flex-wrap: nowrap;
+    justify-content: right;
+  }
 }
