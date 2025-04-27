@@ -1,54 +1,77 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>מאזן כניסות פוקר</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- עיצוב -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase (חובה לפני app.js) -->
+  <script type="module" src="firebase.js"></script>
+
+  <!-- לוגיקה של האפליקציה -->
+  <script type="module" src="app.js"></script>
 </head>
 <body>
 
+<!-- ───── מסך פתיחה ───── -->
 <div id="startScreen" class="centered">
   <h1>ברוך הבא!</h1>
-  <img src="main_pic.png" alt="תמונה ראשית" style="max-width:80%;margin:10px auto;display:block">
 
-  <div>
+  <!-- תמונה ראשית -->
+  <img src="main_pic.png"
+       alt="תמונה ראשית"
+       style="max-width: 80%; margin: 5px auto; display: block;" />
+
+  <div class="button-group">
     <button id="newGameButton" onclick="startNewGame()">🎯 התחל משחק חדש</button>
-    <button id="logButton"  onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
+    <button id="logButton" onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
   </div>
 
   <h2>משחקים קיימים:</h2>
   <div id="gamesList"></div>
 </div>
 
+<!-- ───── מסך ניהול משחק ───── -->
 <div id="mainScreen" class="hidden centered">
   <h2>ניהול משחק</h2>
 
   <div class="add-player">
-    <input id="newPlayer" placeholder="שם שחקן">
+    <input id="newPlayer" placeholder="שם שחקן" />
     <button onclick="addPlayer()">➕ הוסף שחקן</button>
-    <div id="nameError" class="error-text"></div>
   </div>
 
   <h3>קנייה</h3>
   <div id="buyList"></div>
+  <div class="total">סה״כ קניות: <span id="totalBuy">0</span></div>
 
   <h3>ניצחון</h3>
   <div id="winList"></div>
+  <div class="total">סה״כ ניצחונות: <span id="totalWin">0</span></div>
 
-  <button onclick="showSettle()">חשב איזון</button>
-  <button onclick="copyResult()">📋 העתק סיכום</button>
+  <button class="big-button" onclick="showSettle()">חשב איזון</button>
+  <button class="copy-button" onclick="copyResult()">📋 העתק סיכום</button>
 
   <pre id="result"></pre>
+
+  <!-- לוג פעולות ↓ -->
+  <h3>לוג פעולות</h3>
+  <table id="buyLog">
+    <thead>
+      <tr><th>תאריך</th><th>שעה</th><th>שחקן</th><th>פעולה</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
+<!-- ───── מסך לוג מחיקות ───── -->
 <div id="logScreen" class="hidden centered">
   <h2>לוג מחיקות</h2>
   <div id="logsList"></div>
   <button onclick="showStartScreen()">⬅️ חזרה למסך הראשי</button>
 </div>
 
-<script type="module" src="firebase.js"></script>
-<script type="module" src="app.js"></script>
 </body>
 </html>
