@@ -1,73 +1,110 @@
-/****************************************************************
-*  לוגיקה מקומית בלבד   (ללא Firebase)                         *
-****************************************************************/
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set, push, get, child, update, remove } from "firebase/database";
+import { firebaseConfig } from "./firebase.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// משתנים
 let players = [];
+let currentGameId = null;
 
-/* הוספת שחקן */
-function addPlayer(){
-  const input=document.getElementById('newPlayer');
+// פונקציות
+
+function startNewGame() {
+  currentGameId = push(ref(db, 'games')).key;
+  players = [];
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("mainScreen").classList.remove("hidden");
+  updateLists();
+}
+
+function addPlayer() {
+  const input = document.getElementById("newPlayer");
   const name = input.value.trim();
-  if(!name) return;
+  const nameError = document.getElementById("nameError");
+  if (!name) return;
 
-  players.push({name,buy:0,win:0});
-  input.value='';
-  renderPlayers();
+  if (players.find(p => p.name === name)) {
+    nameError.textContent = "⚠️ השם כבר קיים!";
+    return;
+  }
+
+  nameError.textContent = "";
+  players.push({ name: name, buy: 0, win: 0 });
+  updateLists();
+  input.value = "";
 }
 
-/* בניית רשימות */
-function renderPlayers(){
-  const buyList=document.getElementById('buyList');
-  const winList=document.getElementById('winList');
-  buyList.innerHTML=winList.innerHTML='';
+function updateLists() {
+  const buyList = document.getElementById("buyList");
+  const winList = document.getElementById("winList");
 
-  players.forEach((p,idx)=>{
-    buyList.appendChild(rowHTML(idx,'buy',p.buy));
-    winList.appendChild(rowHTML(idx,'win',p.win));
+  buyList.innerHTML = "";
+  winList.innerHTML = "";
+
+  players.forEach((p, index) => {
+    buyList.appendChild(createPlayerRow(index, "buy"));
+    winList.appendChild(createPlayerRow(index, "win"));
   });
-  updateTotals();
 }
-function rowHTML(i,type,val){
-  const div=document.createElement('div');
-  div.className='player-row';
-  const label=`${players[i].name}: ${val}`;
-  div.innerHTML=`${label}
-     <span class="buttons">
-        <button onclick="inc('${type}',${i},1)">+1</button>
-        <button onclick="inc('${type}',${i},-1)">-1</button>
-     </span>`;
+
+function createPlayerRow(index, type) {
+  const div = document.createElement("div");
+  div.className = "playerRow";
+
+  const nameSpan = document.createElement("span");
+  nameSpan.className = "playerName";
+  nameSpan.innerText = players[index].name;
+
+  const minusBtn = document.createElement("button");
+  minusBtn.innerText = "-1";
+  minusBtn.onclick = () => adjustScore(index, type, -1);
+
+  const plusBtn = document.createElement("button");
+  plusBtn.innerText = "+1";
+  plusBtn.onclick = () => adjustScore(index, type, 1);
+
+  div.appendChild(nameSpan);
+  div.appendChild(minusBtn);
+  div.appendChild(plusBtn);
+
   return div;
 }
 
-/* שינוי ניקוד */
-function inc(type,idx,amt){
-  players[idx][type]+=amt;
-  if(players[idx][type]<0) players[idx][type]=0;
-  renderPlayers();
+function adjustScore(index, type, amount) {
+  if (type === "buy") {
+    players[index].buy += amount;
+  } else {
+    players[index].win += amount;
+  }
+  updateLists();
 }
 
-/* סכומים כוללים */
-function updateTotals(){
-  const sumBuy=players.reduce((s,p)=>s+p.buy,0);
-  const sumWin=players.reduce((s,p)=>s+p.win,0);
-  document.getElementById('totalBuy').innerText=sumBuy;
-  document.getElementById('totalWin').innerText=sumWin;
+function showSettle() {
+  const result = document.getElementById("result");
+  result.innerText = players.map(p => `${p.name}: ניצחונות ${p.win} - קניות ${p.buy}`).join("\n");
 }
 
-/* חישוב/סיכום */
-function showSettle(){
-  const pre=document.getElementById('result');
-  const lines=players.map(p=>`${p.name}: קניות ${p.buy} | ניצח ${p.win}`);
-  pre.innerText=lines.join('\n');
-}
-/* העתקה */
-function copyResult(){
-  navigator.clipboard.writeText(document.getElementById('result').innerText);
+function copyResult() {
+  const text = document.getElementById("result").innerText;
+  navigator.clipboard.writeText(text);
 }
 
-/* חשיפה ל-HTML */
-window.addPlayer=addPlayer;
-window.inc=inc;
-window.showSettle=showSettle;
-window.copyResult=copyResult;
+function showLogScreen() {
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("logScreen").classList.remove("hidden");
+}
 
-/* (startNewGame() מוגדר ב-HTML פנימי) */
+function showStartScreen() {
+  document.getElementById("logScreen").classList.add("hidden");
+  document.getElementById("startScreen").classList.remove("hidden");
+}
+
+// זמינות בפעולות
+window.startNewGame = startNewGame;
+window.addPlayer = addPlayer;
+window.showSettle = showSettle;
+window.copyResult = copyResult;
+window.showLogScreen = showLogScreen;
+window.showStartScreen = showStartScreen;
