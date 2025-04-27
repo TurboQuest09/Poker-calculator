@@ -10,7 +10,7 @@ input{padding:10px;font-size:16px;margin:8px}
 pre{text-align:right;background:#f5f5f5;padding:10px;direction:rtl;overflow-x:auto}
 .error-text{color:red;font-size:14px;margin-top:5px}
 
-/* שורה של שחקן */
+/* שורת שחקן */
 .playerRow{display:flex;align-items:center;justify-content:right;margin:10px 0;gap:10px}
 .playerName{font-weight:bold;font-size:18px}
 .countSpan{min-width:38px;display:inline-block}
@@ -19,9 +19,13 @@ pre{text-align:right;background:#f5f5f5;padding:10px;direction:rtl;overflow-x:au
 /* שורה מסכמת */
 .totalRow{font-weight:bold;border-top:1px solid #999;padding-top:6px;margin-top:8px}
 
-/* פריטי משחק + כפתור מחיקה */
-.gameItem{display:flex;align-items:center;justify-content:space-between;
-          border:1px solid #ddd;border-radius:6px;padding:6px 10px;margin:5px auto;max-width:340px}
+/* פריטי משחק + מחיקה */
+.gameItem{
+  display:flex;align-items:center;justify-content:space-between;
+  border:1px solid #ddd;border-radius:6px;padding:6px 10px;margin:5px auto;
+  max-width:340px;
+  cursor:pointer;               /* ← כל השורה לחיצה */
+}
 .delBtn{background:#dc3545}
 .delBtn:hover{background:#b02a37}
 
@@ -30,6 +34,5 @@ pre{text-align:right;background:#f5f5f5;padding:10px;direction:rtl;overflow-x:au
   button{width:auto;font-size:18px;margin:10px 5px}
   input{width:90%;margin:10px auto}
   img{max-width:90%}
-  .playerRow{flex-wrap:nowrap;justify-content:right}
   .playerRow button{width:35px;height:35px;font-size:15px}
 }
