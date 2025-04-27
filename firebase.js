@@ -1,9 +1,8 @@
 // firebase.js
 import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getDatabase, ref, set, push, onValue, remove, update }
+import { getDatabase, ref, set, push, onValue, get, remove, update }
         from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
-// הגדרות Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBDXDiVPlT9Xc4-OGo9soTxmREtMR1gFHg",
   authDomain: "poker-eacf2.firebaseapp.com",
@@ -17,5 +16,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
-// מייצא את מה שצריך לשאר הקבצים
-export { db, ref, set, push, onValue, remove, update };
+export { db, ref, set, push, onValue, get, remove, update };
