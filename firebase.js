@@ -1,10 +1,11 @@
-// טעינת Firebase CDN
+// טעינת Firebase מה-CDN
 import { initializeApp }
   from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import {
-  getDatabase, ref, set, push, onValue, get, remove, update, off
+  getDatabase, ref, set, push, onValue, get, remove, update
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
+// הגדרות פרויקט שלך
 const firebaseConfig = {
   apiKey: "AIzaSyBDXDiVPlT9Xc4-OGo9soTxmREtMR1gFHg",
   authDomain: "poker-eacf2.firebaseapp.com",
@@ -18,6 +19,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
-export {
-  db, ref, set, push, onValue, get, remove, update, off   // ← כולל off
-};
+// מייצא הכול (ללא off)
+export { db, ref, set, push, onValue, get, remove, update };
