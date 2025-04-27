@@ -1,18 +1,13 @@
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, push, get, child, update, remove } from "firebase/database";
-import { firebaseConfig } from "./firebase.js";
+import { db, ref, push, update, remove } from "./firebase.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-// משתנים
+// משתנים גלובליים
 let players = [];
 let currentGameId = null;
 
-// פונקציות
+/* ─────────────  פונקציות ראשיות  ───────────── */
 
 function startNewGame() {
-  currentGameId = push(ref(db, 'games')).key;
+  currentGameId = push(ref(db, "games")).key;   // יצירת game חדש
   players = [];
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("mainScreen").classList.remove("hidden");
@@ -21,75 +16,71 @@ function startNewGame() {
 
 function addPlayer() {
   const input = document.getElementById("newPlayer");
-  const name = input.value.trim();
-  const nameError = document.getElementById("nameError");
-  if (!name) return;
+  const name  = input.value.trim();
+  const err   = document.getElementById("nameError");
 
+  if (!name) return;
   if (players.find(p => p.name === name)) {
-    nameError.textContent = "⚠️ השם כבר קיים!";
+    err.textContent = "⚠️ השם כבר קיים!";
     return;
   }
 
-  nameError.textContent = "";
-  players.push({ name: name, buy: 0, win: 0 });
+  err.textContent = "";
+  players.push({ name, buy: 0, win: 0 });
   updateLists();
   input.value = "";
+}
+
+function adjustScore(idx, type, delta) {
+  if (type === "buy") players[idx].buy += delta;
+  else                players[idx].win += delta;
+  updateLists();
 }
 
 function updateLists() {
   const buyList = document.getElementById("buyList");
   const winList = document.getElementById("winList");
-
   buyList.innerHTML = "";
   winList.innerHTML = "";
 
-  players.forEach((p, index) => {
-    buyList.appendChild(createPlayerRow(index, "buy"));
-    winList.appendChild(createPlayerRow(index, "win"));
+  players.forEach((p, i) => {
+    buyList.appendChild(row(i, "buy"));
+    winList.appendChild(row(i, "win"));
   });
 }
 
-function createPlayerRow(index, type) {
+function row(i, type) {
   const div = document.createElement("div");
   div.className = "playerRow";
 
-  const nameSpan = document.createElement("span");
-  nameSpan.className = "playerName";
-  nameSpan.innerText = players[index].name;
+  const name = document.createElement("span");
+  name.className = "playerName";
+  name.textContent = players[i].name;
 
-  const minusBtn = document.createElement("button");
-  minusBtn.innerText = "-1";
-  minusBtn.onclick = () => adjustScore(index, type, -1);
+  const minus = document.createElement("button");
+  minus.textContent = "-1";
+  minus.onclick = () => adjustScore(i, type, -1);
 
-  const plusBtn = document.createElement("button");
-  plusBtn.innerText = "+1";
-  plusBtn.onclick = () => adjustScore(index, type, 1);
+  const plus = document.createElement("button");
+  plus.textContent = "+1";
+  plus.onclick  = () => adjustScore(i, type, 1);
 
-  div.appendChild(nameSpan);
-  div.appendChild(minusBtn);
-  div.appendChild(plusBtn);
-
+  div.append(name, minus, plus);
   return div;
 }
 
-function adjustScore(index, type, amount) {
-  if (type === "buy") {
-    players[index].buy += amount;
-  } else {
-    players[index].win += amount;
-  }
-  updateLists();
-}
-
 function showSettle() {
-  const result = document.getElementById("result");
-  result.innerText = players.map(p => `${p.name}: ניצחונות ${p.win} - קניות ${p.buy}`).join("\n");
+  const pre = document.getElementById("result");
+  pre.textContent = players
+    .map(p => `${p.name}: ניצחונות ${p.win} - קניות ${p.buy}`)
+    .join("\n");
 }
 
 function copyResult() {
-  const text = document.getElementById("result").innerText;
-  navigator.clipboard.writeText(text);
+  navigator.clipboard.writeText(document.getElementById("result").textContent);
 }
+
+/* ─────────────  ניווט מסכים  ───────────── */
 
 function showLogScreen() {
   document.getElementById("startScreen").classList.add("hidden");
@@ -101,10 +92,11 @@ function showStartScreen() {
   document.getElementById("startScreen").classList.remove("hidden");
 }
 
-// זמינות בפעולות
-window.startNewGame = startNewGame;
-window.addPlayer = addPlayer;
-window.showSettle = showSettle;
-window.copyResult = copyResult;
-window.showLogScreen = showLogScreen;
+/* ─────────────  חשיפת פונקציות ל-HTML  ───────────── */
+/*  בגלל שאנחנו בטיפוס module חייבים לשים על window */
+window.startNewGame    = startNewGame;
+window.addPlayer       = addPlayer;
+window.showSettle      = showSettle;
+window.copyResult      = copyResult;
+window.showLogScreen   = showLogScreen;
 window.showStartScreen = showStartScreen;
