@@ -44,21 +44,21 @@ function loadGames() {
   onValue(ref(db, "games"), (snap) => {
     list.innerHTML = "";
     const data = snap.val() || {};
-    for (const [id, g] of Object.entries(data)) {
-      const wrap = document.createElement("div");
+    Object.entries(data)
+  .sort((a, b) => b[1].created - a[1].created)
+  .forEach(([id, g]) => {
+    const wrap = document.createElement("div");
+    const btn = document.createElement("button");
+    btn.className = "btn-secondary";
+    btn.textContent = `משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
+    btn.onclick = () => openGame(id);
 
-      const btn = document.createElement("button");
-      btn.className = "btn-secondary";
-      btn.textContent = `משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
-      btn.onclick = () => openGame(id);
+    const del = document.createElement("button");
+    del.textContent = "🗑️ מחק";
+    del.onclick = () => deleteGame(id, g);
 
-      const del = document.createElement("button");
-      del.textContent = "🗑️ מחק";
-      del.onclick = () => deleteGame(id, g);
-
-      wrap.append(btn, del);
-      list.appendChild(wrap);
-    }
+    wrap.append(btn, del);
+    list.appendChild(wrap);
   });
 }
 
@@ -77,19 +77,20 @@ function showLogScreen() {
   onValue(ref(db, "deletedGames"), (snap) => {
     logs.innerHTML = "";
     const data = snap.val() || {};
-    for (const [id, g] of Object.entries(data)) {
-      const row = document.createElement("div");
-      row.className = "log-item";
-      row.textContent =
-        `${new Date(g.deletedAt).toLocaleString("he-IL")} | משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
+ Object.entries(data)
+  .sort((a, b) => b[1].deletedAt - a[1].deletedAt)
+  .forEach(([id, g]) => {
+    const row = document.createElement("div");
+    row.className = "log-item";
+    row.textContent =
+      `${new Date(g.deletedAt).toLocaleString("he-IL")} | משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
 
-      const restore = document.createElement("button");
-      restore.textContent = "♻️ שחזר";
-      restore.onclick = () => restoreGame(id, g);
+    const restore = document.createElement("button");
+    restore.textContent = "♻️ שחזר";
+    restore.onclick = () => restoreGame(id, g);
 
-      row.appendChild(restore);
-      logs.appendChild(row);
-    }
+    row.appendChild(restore);
+    logs.appendChild(row);
   });
 }
 function restoreGame(delId, g) {
