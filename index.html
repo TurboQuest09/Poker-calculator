@@ -1,22 +1,16 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <title>מאזן כניסות פוקר</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://js.sentry-cdn.com/adc594d872955186bff54c5cbe96fbec.min.js" crossorigin="anonymous"></script>
-  <script>
-    Sentry.init({
-      dsn: "https://adc594d872955186bff54c5cbe96fbec@o4509221272485888.ingest.us.sentry.io/4509221357617152",
-      tracesSampleRate: 1.0,
-    });
-  </script>
   <script type="module" src="app.js"></script>
   <style>
     .hidden { display: none; }
+    .player-row { margin-bottom: 10px; }
   </style>
 </head>
-
 <body>
 
 <!-- מסך פתיחה -->
@@ -26,8 +20,9 @@
   <button onclick="startGame()">התחל משחק חדש</button>
 </div>
 
-<!-- מסך המשחק -->
+<!-- מסך ניהול משחק -->
 <div id="mainScreen" class="hidden">
+
   <h2>רישום משתתף חדש</h2>
   <input id="newPlayer" placeholder="שם">
   <button onclick="addPlayer()">הוסף</button>
@@ -35,15 +30,18 @@
 
   <h2>קנייה</h2>
   <div id="buyList"></div>
+  <p>סה"כ קניות: <span id="totalBuy">0</span></p>
   <hr>
 
   <h2>ניצחון</h2>
   <div id="winList"></div>
+  <p>סה"כ ניצחונות: <span id="totalWin">0</span></p>
   <hr>
 
   <button onclick="showSettle()">חשב איזון</button>
-  <button onclick="copyResult()">העתק תוצאה</button>
+  <button onclick="copyResult()">העתק לווטסאפ</button>
   <pre id="result"></pre>
+
 </div>
 
 </body>
