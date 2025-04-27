@@ -1,52 +1,33 @@
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
   text-align: center;
   margin: 0;
   padding: 0;
 }
 
 .centered {
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 button {
-  margin: 5px;
-  padding: 10px 20px;
+  margin: 8px;
+  padding: 12px 24px;
   font-size: 16px;
   cursor: pointer;
-}
-
-#newGameButton {
+  border: none;
+  border-radius: 8px;
   background-color: #4CAF50;
   color: white;
-  font-size: 20px;
-  border: none;
-  border-radius: 8px;
 }
 
-#logButton {
-  background-color: #2196F3;
-  color: white;
-  font-size: 14px;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  margin-left: 10px;
+button:hover {
+  background-color: #45a049;
 }
 
-#gamesHeader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#gamesList button {
-  margin: 5px;
-  padding: 6px 12px;
-}
-
-.add-player {
-  margin-bottom: 20px;
+input {
+  padding: 10px;
+  font-size: 16px;
+  margin: 8px;
 }
 
 pre {
@@ -54,8 +35,38 @@ pre {
   background-color: #f5f5f5;
   padding: 10px;
   direction: rtl;
+  overflow-x: auto;
 }
 
 .hidden {
   display: none;
+}
+
+.error-text {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+#buyLog {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  button {
+    width: 90%;
+    font-size: 18px;
+    margin: 10px auto;
+  }
+
+  input {
+    width: 90%;
+    margin: 10px auto;
+  }
+
+  img {
+    max-width: 90%;
+  }
 }
