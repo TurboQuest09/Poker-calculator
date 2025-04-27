@@ -162,29 +162,28 @@ function playerRow(p, field, idx) {
   return row;
 }
 
-/* לוג פעולות במשחק */
+/* לוג פעולות במשחק – תאריך+שעה עובדים גם בטלפון */
 function renderActionLog() {
   const pre = $("#actionLog");
 
   onValue(ref(db, `games/${currentGameId}/actions`), (snap) => {
     const arr = snap.val() ? Object.values(snap.val()) : [];
 
-    pre.textContent = arr
+    /* נבנה HTML עם span.ltr – נשמור innerHTML */
+    pre.innerHTML = arr
       .map(a => {
         const d  = new Date(a.time);
-        const dt = d.toLocaleDateString("he-IL");  // 27/04/2025
-        const tm = d.toLocaleTimeString("he-IL");  // 21:52:06
+        const dt = d.toLocaleDateString("he-IL");   // 27/04/2025
+        const tm = d.toLocaleTimeString("he-IL");   // 21:52:06
 
-        /*  ‎\u200E = LTR-Mark  מכריח את התאריך-שעה להופיע בשלמות גם במסכים צרים */
-        return `\u200E${dt} ${tm} | ${a.player} | ` +
+        return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ` +
                `${a.delta > 0 ? "+" : ""}${a.delta} ` +
                `${a.type === "buy" ? "קנייה" : "ניצחון"}`;
       })
-      .reverse()             // אחרון-קודם למעלה
-      .join("\n");           // שורות מרובות
+      .reverse()
+      .join("<br>");        // קו חדש
   });
 }
-
 
 /* חישוב איזון + העתקה */
 function showSettle() {
