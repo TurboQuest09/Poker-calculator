@@ -171,14 +171,13 @@ function renderActionLog() {
 
     /* נבנה HTML עם span.ltr – נשמור innerHTML */
     pre.innerHTML = arr
-      .map(a => {
-        const d  = new Date(a.time);
-        const dt = d.toLocaleDateString("he-IL");   // 27/04/2025
-        const tm = d.toLocaleTimeString("he-IL");   // 21:52:06
-
-        return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ` +
-               `${a.delta > 0 ? "+" : ""}${a.delta} ` +
-               `${a.type === "buy" ? "קנייה" : "ניצחון"}`;
+  .filter(a => a.type === "buy")        // ✳️ רק קניות
+  .map(a => {
+      const d  = new Date(a.time);
+      const dt = d.toLocaleDateString("he-IL");
+      const tm = d.toLocaleTimeString("he-IL");
+      return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ` +
+             `+${a.delta} קנייה`;
       })
       .reverse()
       .join("<br>");        // קו חדש
