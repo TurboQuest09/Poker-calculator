@@ -105,13 +105,31 @@ function showStartScreen() {
 
 /* ====== שחקנים ===== */
 function addPlayer() {
-  const name = $("#newPlayer").value.trim();
-  if (!name || !currentGameId) return;
-  $("#newPlayer").value = "";
+  const input = document.getElementById("newPlayer");
+  const raw   = input.value.trim();
+  // 1. וידוא שיש שם ותיק משחק פעיל
+  if (!raw || !currentGameId) {
+    alert("אנא הזן שם שחקן וודא שמשחק פעיל");
+    return;
+  }
+  // 2. רק אותיות (כולל עברית) ורווחים
+  const nameRegex = /^[\p{L}\s]+$/u;
+  if (!nameRegex.test(raw)) {
+    alert("השם צריך לכלול רק אותיות ורווחים");
+    return;
+  }
+  // 3. מניעת כפילויות (case-insensitive)
+  if (players.some(p => p.name.toLowerCase() === raw.toLowerCase())) {
+    alert(`השחקן "${raw}" כבר קיים במשחק`);
+    return;
+  }
 
+  // ===========  מוסיף לפיירבייס  ===========
+  input.value = "";
   const pRef = push(ref(db, `games/${currentGameId}/players`));
-  set(pRef, { id: pRef.key, name, buy: 0, win: 0 });
+  set(pRef, { id: pRef.key, name: raw, buy: 0, win: 0 });
 }
+
 
 function changeVal(index, field, delta) {
   players[index][field] += delta;
