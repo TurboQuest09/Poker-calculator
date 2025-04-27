@@ -4,62 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>מאזן כניסות פוקר</title>
-
-  <!-- קובץ העיצוב שלכם -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- מודול-JS הראשי -->
+  <script type="module" src="firebase.js"></script>
   <script type="module" src="app.js"></script>
 </head>
 <body>
 
 <!-- מסך פתיחה -->
-<div id="startScreen">
+<div id="startScreen" class="centered">
   <h1>ברוך הבא!</h1>
+<img src="main_pic.png" alt="תמונה ראשית" style="max-width: 80%; margin: 5px auto; display: block;">
 
   <div>
     <button id="newGameButton" onclick="startNewGame()">🎯 התחל משחק חדש</button>
     <button id="logButton" onclick="showLogScreen()">📋 הצג לוג מחיקות</button>
   </div>
 
-  <h2>משחקים קיימים:</h2>
+  <div id="gamesHeader">
+    <h2>משחקים קיימים:</h2>
+  </div>
+
   <div id="gamesList"></div>
 </div>
 
 <!-- מסך ניהול משחק -->
-<div id="mainScreen" class="hidden">
-  <h2>רישום משתתף חדש</h2>
-  <div class="form-group">
-    <input id="newPlayer" placeholder="שם">
-    <button onclick="addPlayer()">➕ הוסף</button>
+<div id="mainScreen" class="hidden centered">
+  <h2>ניהול משחק</h2>
+
+  <div class="add-player">
+    <input id="newPlayer" placeholder="שם שחקן">
+    <button onclick="addPlayer()">➕ הוסף שחקן</button>
   </div>
 
-  <hr>
+  <h3>קנייה</h3>
+  <div id="buyList"></div>
 
-  <h2>קנייה</h2>
-  <div id="buyList" class="player-list"></div>
-  <div class="total">סה"כ קניות: <span id="totalBuy">0</span></div>
+  <h3>ניצחון</h3>
+  <div id="winList"></div>
 
-  <hr>
+  <button onclick="showSettle()">חשב איזון</button>
+  <button onclick="copyResult()">📋 העתק סיכום</button>
 
-  <h2>ניצחון</h2>
-  <div id="winList" class="player-list"></div>
-  <div class="total">סה"כ ניצחונות: <span id="totalWin">0</span></div>
-
-  <hr>
-
-  <button class="big-button" onclick="showSettle()">חשב איזון</button>
   <pre id="result"></pre>
-  <button class="copy-button" onclick="copyResult()">📋 העתק סיכום</button>
+
+  <!-- פה יתווסף לוג הקניות -->
+  <div id="buyLog"></div>
 </div>
 
-<script>
-  /** מעבר מסך פתיחה → ניהול משחק */
-  function startNewGame(){
-    document.getElementById('startScreen').classList.add('hidden');
-    document.getElementById('mainScreen').classList.remove('hidden');
-  }
-</script>
+<!-- מסך לוג מחיקות -->
+<div id="logScreen" class="hidden centered">
+  <h2>לוג מחיקות</h2>
+  <div id="logsList"></div>
+  <button onclick="showStartScreen()">⬅️ חזרה למסך הראשי</button>
+</div>
 
 </body>
 </html>
