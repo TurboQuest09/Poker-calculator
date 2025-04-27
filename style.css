@@ -1,31 +1,67 @@
-/* בסיס */
+/* מבנה כללי */
 body {
   font-family: Arial, sans-serif;
-  padding: 10px;
-  max-width: 600px;
-  margin: auto;
-  background: #fff;
+  margin: 0;
+  padding: 15px;
 }
 
-.hidden { display: none; }
-.centered { text-align: center; }
+.centered {
+  max-width: 420px;
+  margin: auto;
+  text-align: center;
+}
 
-h1, h2 { text-align: center; }
+/* כפתורים */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 1rem;
+  margin: 6px;
+}
 
-.add-player,
-.button-group     { display: flex; justify-content: center; gap: 12px; margin: 10px 0; }
+.btn-primary   { background:#28a745; color:#fff; font-size:1.15rem; width:90%; }
+.btn-secondary { background:#007bff; color:#fff; font-size:0.95rem; }
 
-input  { padding: 8px; font-size: 1em; }
-button { padding: 8px 14px; font-size: 1em; cursor: pointer; border-radius: 6px; }
+.add-player { display:flex; flex-direction: row-reverse; gap:6px; justify-content:center; }
 
-.big-button  { width: 48%; background:#4CAF50; color:#fff; border:none; }
-.copy-button { width: 48%; background:#2196F3; color:#fff; border:none; }
+/* רשימת שחקנים */
+.player-row {
+  display: flex;
+  flex-direction: row-reverse;   /* שם לימין, כפתורים לשמאל */
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  background:#f1f1f1;
+  padding:6px;
+  margin:4px 0;
+  border-radius:6px;
+}
 
-.player-row { display:flex; align-items:center; gap:8px; justify-content:center; margin:6px 0; }
-.player-row span.value { width:32px; text-align:center; }
+.player-row button {
+  background:#e0e0e0;
+  width:46px;
+  height:38px;
+}
 
-.total { font-weight:bold; margin:8px 0; }
+.value { width:32px; display:inline-block; text-align:center; }
 
-table#buyLog { width:100%; border-collapse:collapse; margin-top:10px; font-size:0.9em; }
-table#buyLog th, table#buyLog td { border:1px solid #ccc; padding:4px; }
-table#buyLog th { background:#f2f2f2; }
+.totals { font-weight:bold; margin-top:4px; }
+
+.button-bar { display:flex; gap:8px; justify-content:center; margin-top:12px; }
+
+.hidden { display:none; }
+
+/* טבלת הלוג במסך מחיקות */
+.log-item {
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  background:#f9f9f9;
+  padding:8px;
+  margin:4px 0;
+  border-radius:6px;
+}
+
+.log-item button { background:#dc3545; color:#fff; }
