@@ -10,12 +10,10 @@ let currentGameId = null;
 /* ====== אתחול ===== */
 document.addEventListener("DOMContentLoaded", () => {
   $("#newGameBtn").addEventListener("click", startNewGame);
-  $("#logBtn"     ).addEventListener("click", showLogScreen);
-
+  $("#logBtn").addEventListener("click", showLogScreen);
   $("#addPlayerBtn").addEventListener("click", addPlayer);
-  $("#copyBtn"     ).addEventListener("click", copyResult);
-  $("#settleBtn"   ).addEventListener("click", showSettle);
-
+  $("#copyBtn").addEventListener("click", copyResult);
+  $("#settleBtn").addEventListener("click", showSettle);
   $("#backBtn").addEventListener("click", showStartScreen);
 
   loadGames();
@@ -45,27 +43,30 @@ function loadGames() {
     list.innerHTML = "";
     const data = snap.val() || {};
     Object.entries(data)
-  .sort((a, b) => b[1].created - a[1].created)
-  .forEach(([id, g]) => {
-    const wrap = document.createElement("div");
-    const btn = document.createElement("button");
-    btn.className = "btn-secondary";
-    btn.textContent = `משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
-    btn.onclick = () => openGame(id);
+      .map(([id, g]) => ({ id, ...g }))
+      .sort((a, b) => b.created - a.created)
+      .forEach((g) => {
+        const wrap = document.createElement("div");
+        const btn = document.createElement("button");
+        btn.className = "btn-secondary";
+        btn.textContent = `משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
+        btn.onclick = () => openGame(g.id);
 
-    const del = document.createElement("button");
-    del.textContent = "🗑️ מחק";
-    del.onclick = () => deleteGame(id, g);
+        const del = document.createElement("button");
+        del.textContent = "🗑️ מחק";
+        del.onclick = () => deleteGame(g.id, g);
 
-    wrap.append(btn, del);
-    list.appendChild(wrap);
+        wrap.append(btn, del);
+        list.appendChild(wrap);
+      });
   });
 }
 
 function deleteGame(id, g) {
   const delRef = push(ref(db, "deletedGames"));
-  set(delRef, { ...g, originalId: id, deletedAt: Date.now() })
-    .then(() => remove(ref(db, `games/${id}`)));
+  set(delRef, { ...g, originalId: id, deletedAt: Date.now() }).then(() =>
+    remove(ref(db, `games/${id}`))
+  );
 }
 
 /* ====== לוג מחיקות ===== */
@@ -77,28 +78,31 @@ function showLogScreen() {
   onValue(ref(db, "deletedGames"), (snap) => {
     logs.innerHTML = "";
     const data = snap.val() || {};
- Object.entries(data)
-  .sort((a, b) => b[1].deletedAt - a[1].deletedAt)
-  .forEach(([id, g]) => {
-    const row = document.createElement("div");
-    row.className = "log-item";
-    row.textContent =
-      `${new Date(g.deletedAt).toLocaleString("he-IL")} | משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
+    Object.entries(data)
+      .map(([id, g]) => ({ id, ...g }))
+      .sort((a, b) => b.deletedAt - a.deletedAt)
+      .forEach((g) => {
+        const row = document.createElement("div");
+        row.className = "log-item";
+        row.textContent = `${new Date(g.deletedAt).toLocaleString("he-IL")} | משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
 
-    const restore = document.createElement("button");
-    restore.textContent = "♻️ שחזר";
-    restore.onclick = () => restoreGame(id, g);
+        const restore = document.createElement("button");
+        restore.textContent = "♻️ שחזר";
+        restore.onclick = () => restoreGame(g.id, g);
 
-    row.appendChild(restore);
-    logs.appendChild(row);
+        row.appendChild(restore);
+        logs.appendChild(row);
+      });
   });
 }
+
 function restoreGame(delId, g) {
   const newRef = push(ref(db, "games"));
   set(newRef, { ...g, restoredFrom: delId }).then(() =>
     remove(ref(db, `deletedGames/${delId}`))
   );
 }
+
 function showStartScreen() {
   $("#logScreen").classList.add("hidden");
   $("#startScreen").classList.remove("hidden");
@@ -107,30 +111,25 @@ function showStartScreen() {
 /* ====== שחקנים ===== */
 function addPlayer() {
   const input = document.getElementById("newPlayer");
-  const raw   = input.value.trim();
-  // 1. וידוא שיש שם ותיק משחק פעיל
+  const raw = input.value.trim();
   if (!raw || !currentGameId) {
     alert("אנא הזן שם שחקן וודא שמשחק פעיל");
     return;
   }
-  // 2. רק אותיות (כולל עברית) ורווחים
   const nameRegex = /^[\p{L}\s]+$/u;
   if (!nameRegex.test(raw)) {
     alert("השם צריך לכלול רק אותיות ורווחים");
     return;
   }
-  // 3. מניעת כפילויות (case-insensitive)
   if (players.some(p => p.name.toLowerCase() === raw.toLowerCase())) {
     alert(`השחקן "${raw}" כבר קיים במשחק`);
     return;
   }
 
-  // ===========  מוסיף לפיירבייס  ===========
   input.value = "";
   const pRef = push(ref(db, `games/${currentGameId}/players`));
   set(pRef, { id: pRef.key, name: raw, buy: 0, win: 0 });
 }
-
 
 function changeVal(index, field, delta) {
   players[index][field] += delta;
@@ -175,59 +174,57 @@ function playerRow(p, field, idx) {
   value.textContent = p[field];
 
   const nameSpan = document.createElement("span");
-  nameSpan.textContent = p.name;          /* --- בלי נקודתיים --- */
+  nameSpan.textContent = p.name;
 
   row.append(minus, plus, value, nameSpan);
   return row;
 }
 
-/* לוג פעולות במשחק – תאריך+שעה עובדים גם בטלפון */
+/* לוג פעולות במשחק */
 function renderActionLog() {
   const pre = $("#actionLog");
 
   onValue(ref(db, `games/${currentGameId}/actions`), (snap) => {
     const arr = snap.val() ? Object.values(snap.val()) : [];
-
-    /* נבנה HTML עם span.ltr – נשמור innerHTML */
     pre.innerHTML = arr
-  .filter(a => a.type === "buy")        // ✳️ רק קניות
-  .map(a => {
-      const d  = new Date(a.time);
-      const dt = d.toLocaleDateString("he-IL");
-      const tm = d.toLocaleTimeString("he-IL");
-      return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ` +
-             `+${a.delta} קנייה`;
+      .filter(a => a.type === "buy")
+      .map(a => {
+        const d = new Date(a.time);
+        const dt = d.toLocaleDateString("he-IL");
+        const tm = d.toLocaleTimeString("he-IL");
+        return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | +${a.delta} קנייה`;
       })
       .reverse()
-      .join("<br>");        // קו חדש
+      .join("<br>");
   });
 }
 
-/* חישוב איזון + העתקה */
+/* חישוב איזון */
 function showSettle() {
   let txt = "🔸 רשימת שחקנים וקניות\n";
   players.forEach(p => txt += `${p.name} – קניות: ${p.buy}\n`);
-  txt += `סה״כ קניות: ${players.reduce((s,p)=>s+p.buy,0)}\n\n`;
+  txt += `סה״כ קניות: ${players.reduce((s, p) => s + p.buy, 0)}\n\n`;
 
   txt += "🔸 רווח / הפסד\n";
-  const balances = players.map(p => ({name:p.name, bal:p.win - p.buy}));
+  const balances = players.map(p => ({ name: p.name, bal: p.win - p.buy }));
   balances.forEach(b => txt += `${b.name}: ${b.bal}\n`);
 
   txt += "\n🔸 תשלומים:\n";
-  const payers = balances.filter(b => b.bal < 0).sort((a,b)=>a.bal-b.bal);
-  const recvs  = balances.filter(b => b.bal > 0).sort((a,b)=>b.bal-a.bal);
-  let i=0,j=0;
-  while(i<payers.length && j<recvs.length){
+  const payers = balances.filter(b => b.bal < 0).sort((a, b) => a.bal - b.bal);
+  const recvs = balances.filter(b => b.bal > 0).sort((a, b) => b.bal - a.bal);
+  let i = 0, j = 0;
+  while (i < payers.length && j < recvs.length) {
     const amt = Math.min(-payers[i].bal, recvs[j].bal);
     txt += `${payers[i].name} ${amt} ל${recvs[j].name}\n`;
     payers[i].bal += amt;
-    recvs[j].bal  -= amt;
-    if(payers[i].bal===0) i++;
-    if(recvs[j].bal===0)  j++;
+    recvs[j].bal -= amt;
+    if (payers[i].bal === 0) i++;
+    if (recvs[j].bal === 0) j++;
   }
   $("#result").textContent = txt;
 }
-function copyResult(){
+
+function copyResult() {
   navigator.clipboard.writeText($("#result").textContent)
-           .then(()=>alert("הסיכום הועתק!"));
+    .then(() => alert("הסיכום הועתק!"));
 }
