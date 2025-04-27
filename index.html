@@ -2,47 +2,53 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>מאזן כניסות פוקר</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://js.sentry-cdn.com/adc594d872955186bff54c5cbe96fbec.min.js" crossorigin="anonymous"></script>
   <script type="module" src="app.js"></script>
-  <style>
-    .hidden { display: none; }
-    .player-row { margin-bottom: 10px; }
-  </style>
 </head>
 <body>
 
 <!-- מסך פתיחה -->
 <div id="startScreen">
-  <h2>ברוך הבא!</h2>
+  <h1>ברוך הבא!</h1>
   <p>לחץ כדי להתחיל משחק חדש:</p>
   <button onclick="startGame()">התחל משחק חדש</button>
 </div>
 
-<!-- מסך ניהול משחק -->
+<!-- מסך ניהול המשחק -->
 <div id="mainScreen" class="hidden">
-
   <h2>רישום משתתף חדש</h2>
-  <input id="newPlayer" placeholder="שם">
-  <button onclick="addPlayer()">הוסף</button>
+  <div class="form-group">
+    <input id="newPlayer" placeholder="שם">
+    <button onclick="addPlayer()">➕ הוסף</button>
+  </div>
+
   <hr>
 
   <h2>קנייה</h2>
-  <div id="buyList"></div>
-  <p>סה"כ קניות: <span id="totalBuy">0</span></p>
+  <div id="buyList" class="player-list"></div>
+  <div class="total">סה"כ קניות: <span id="totalBuy">0</span></div>
+
   <hr>
 
   <h2>ניצחון</h2>
-  <div id="winList"></div>
-  <p>סה"כ ניצחונות: <span id="totalWin">0</span></p>
+  <div id="winList" class="player-list"></div>
+  <div class="total">סה"כ ניצחונות: <span id="totalWin">0</span></div>
+
   <hr>
 
-  <button onclick="showSettle()">חשב איזון</button>
-  <button onclick="copyResult()">העתק לווטסאפ</button>
+  <button class="big-button" onclick="showSettle()">חשב איזון</button>
   <pre id="result"></pre>
-
+  <button class="copy-button" onclick="copyResult()">📋 העתק סיכום</button>
 </div>
+
+<script>
+  function startGame() {
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("mainScreen").classList.remove("hidden");
+  }
+</script>
 
 </body>
 </html>
