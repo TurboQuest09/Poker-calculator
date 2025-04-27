@@ -1,15 +1,69 @@
-let players = [];
+import { db, ref, set, push, onValue, update } from "./firebase.js";
 
-function addPlayer() {
+let players = [];
+let currentGameId = null;
+
+// פתיחת משחק חדש
+window.startNewGame = function() {
+  const now = new Date();
+  const id = now.getTime().toString();
+  const dateStr = now.toLocaleString('he-IL');
+
+  currentGameId = id;
+
+  // שמירת משחק חדש
+  set(ref(db, 'games/' + id), {
+    date: dateStr,
+    players: []
+  });
+
+  players = [];
+  showGameScreen();
+  renderPlayers();
+};
+
+// טעינת משחק קיים
+window.loadGame = function(id) {
+  currentGameId = id;
+
+  onValue(ref(db, 'games/' + id), (snapshot) => {
+    const data = snapshot.val();
+    players = data.players || [];
+    renderPlayers();
+  });
+
+  showGameScreen();
+};
+
+// הוספת שחקן חדש
+window.addPlayer = function() {
   const nameInput = document.getElementById("newPlayer");
   const name = nameInput.value.trim();
   if (!name) return;
 
   players.push({ name: name, buy: 0, win: 0 });
   nameInput.value = "";
+  saveGame();
   renderPlayers();
-}
+};
 
+// עדכון קנייה
+window.incBuy = function(index, amount) {
+  players[index].buy += amount;
+  if (players[index].buy < 0) players[index].buy = 0;
+  saveGame();
+  renderPlayers();
+};
+
+// עדכון ניצחון
+window.incWin = function(index, amount) {
+  players[index].win += amount;
+  if (players[index].win < 0) players[index].win = 0;
+  saveGame();
+  renderPlayers();
+};
+
+// הצגת השחקנים
 function renderPlayers() {
   const buyList = document.getElementById("buyList");
   const winList = document.getElementById("winList");
@@ -17,105 +71,99 @@ function renderPlayers() {
   winList.innerHTML = "";
 
   players.forEach((player, index) => {
-    // קנייה
     const buyRow = document.createElement("div");
-    buyRow.className = "player-row";
     buyRow.innerHTML = `
-      ${player.name}: סה"כ קניות: ${player.buy}
+      ${player.name}: ${player.buy}
       <button onclick="incBuy(${index},1)">+1</button>
       <button onclick="incBuy(${index},-1)">-1</button>
     `;
     buyList.appendChild(buyRow);
 
-    // ניצחון
     const winRow = document.createElement("div");
-    winRow.className = "player-row";
     winRow.innerHTML = `
-      ${player.name}: סה"כ ניצחונות: ${player.win}
+      ${player.name}: ${player.win}
       <button onclick="incWin(${index},1)">+1</button>
       <button onclick="incWin(${index},-1)">-1</button>
     `;
     winList.appendChild(winRow);
   });
-
-  updateTotals();
 }
 
-function incBuy(index, amount) {
-  players[index].buy += amount;
-  if (players[index].buy < 0) players[index].buy = 0;
-  renderPlayers();
+// שמירת מצב המשחק
+function saveGame() {
+  if (currentGameId) {
+    update(ref(db, 'games/' + currentGameId), {
+      players: players
+    });
+  }
 }
 
-function incWin(index, amount) {
-  players[index].win += amount;
-  if (players[index].win < 0) players[index].win = 0;
-  renderPlayers();
-}
+// חישוב סיכום ואיזון
+window.showSettle = function() {
+  let result = "";
 
-function updateTotals() {
-  const totalBuy = players.reduce((sum, p) => sum + p.buy, 0);
-  const totalWin = players.reduce((sum, p) => sum + p.win, 0);
-
-  document.getElementById("totalBuy").innerText = `סה"כ קניות: ${totalBuy}`;
-  document.getElementById("totalWin").innerText = `סה"כ ניצחונות: ${totalWin}`;
-}
-
-function showSettle() {
-  let result = "🔹 רשימת שחקנים וקניות:\n";
+  result += "📋 שחקנים:\n";
   players.forEach(p => {
-    result += `${p.name} - קניות: ${p.buy}\n`;
+    result += `${p.name}: ${p.buy} קניות\n`;
   });
 
   const totalBuy = players.reduce((sum, p) => sum + p.buy, 0);
   result += `סה"כ קניות: ${totalBuy}\n\n`;
 
-  result += "🔹 רווח/הפסד:\n";
-  let balances = [];
-  players.forEach(p => {
-    const balance = p.win - p.buy;
-    balances.push({ name: p.name, balance });
-    result += `${p.name}: ${balance}\n`;
+  result += "📈 מאזן:\n";
+  const balances = players.map(p => ({ name: p.name, balance: p.win - p.buy }));
+
+  balances.forEach(p => {
+    result += `${p.name}: ${p.balance}\n`;
   });
 
-  result += "\n🔹 תשלומים:\n";
+  result += "\n💸 תשלומים:\n";
   const payers = balances.filter(p => p.balance < 0).sort((a, b) => a.balance - b.balance);
   const receivers = balances.filter(p => p.balance > 0).sort((a, b) => b.balance - a.balance);
 
   let i = 0, j = 0;
   while (i < payers.length && j < receivers.length) {
-    const payer = payers[i];
-    const receiver = receivers[j];
-    const amount = Math.min(-payer.balance, receiver.balance);
-
-    result += `${payer.name} משלם ${amount} ל${receiver.name}\n`;
-
-    payer.balance += amount;
-    receiver.balance -= amount;
-
-    if (payer.balance === 0) i++;
-    if (receiver.balance === 0) j++;
+    const amount = Math.min(-payers[i].balance, receivers[j].balance);
+    result += `${payers[i].name} משלם ${amount} ל${receivers[j].name}\n`;
+    payers[i].balance += amount;
+    receivers[j].balance -= amount;
+    if (payers[i].balance === 0) i++;
+    if (receivers[j].balance === 0) j++;
   }
 
   document.getElementById("result").innerText = result;
-}
+};
 
-function copyResult() {
+// העתקת הסיכום
+window.copyResult = function() {
   const text = document.getElementById("result").innerText;
   navigator.clipboard.writeText(text).then(() => {
-    alert("הסיכום הועתק!");
+    alert("הועתק!");
   });
-}
+};
 
-function startGame() {
+// הצגת מסך משחק
+function showGameScreen() {
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("mainScreen").classList.remove("hidden");
 }
 
-// חושפים את הפונקציות ל־HTML
-window.addPlayer = addPlayer;
-window.incBuy = incBuy;
-window.incWin = incWin;
-window.showSettle = showSettle;
-window.copyResult = copyResult;
-window.startGame = startGame;
+// טעינת כל המשחקים במסך פתיחה
+function loadGamesList() {
+  onValue(ref(db, 'games'), (snapshot) => {
+    const data = snapshot.val();
+    const gamesList = document.getElementById("gamesList");
+    gamesList.innerHTML = "";
+
+    if (data) {
+      Object.keys(data).reverse().forEach(id => {
+        const btn = document.createElement("button");
+        btn.textContent = `משחק מ־ ${data[id].date}`;
+        btn.onclick = () => loadGame(id);
+        gamesList.appendChild(btn);
+      });
+    }
+  });
+}
+
+loadGamesList();
