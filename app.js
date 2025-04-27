@@ -168,10 +168,15 @@ function renderActionLog() {
   onValue(ref(db, `games/${currentGameId}/actions`), (snap) => {
     const arr = snap.val() ? Object.values(snap.val()) : [];
     pre.textContent = arr
-      .map(a =>
-        `${new Date(a.time).toLocaleTimeString("he-IL")} | ${a.player} | ` +
-        `${a.delta > 0 ? "+" : ""}${a.delta} ${(a.type === "buy") ? "קנייה" : "ניצחון"}`
-      )
+         .map(a => {
+        const d  = new Date(a.time);                         // ← אובייקט תאריך
+        const dt = d.toLocaleDateString("he-IL");            // תאריך 27/04/2025
+        const tm = d.toLocaleTimeString("he-IL");            // שעה   21:52:06
+        return `${dt} ${tm} | ${a.player} | ` +
+               `${a.delta > 0 ? "+" : ""}${a.delta} ` +
+               `${a.type === "buy" ? "קנייה" : "ניצחון"}`;
+      })
+
       .reverse()
       .join("\n");
   });
