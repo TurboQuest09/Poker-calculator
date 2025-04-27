@@ -36,7 +36,7 @@ window.loadGame = function(id) {
 
 // מחיקת משחק
 window.deleteGame = function(id) {
-  if (confirm("האם אתה בטוח שברצונך למחוק את המשחק?")) {
+  if (confirm("האם למחוק את המשחק?")) {
     remove(ref(db, 'games/' + id));
 
     const now = new Date().toLocaleString('he-IL');
@@ -45,6 +45,22 @@ window.deleteGame = function(id) {
       time: now
     });
   }
+};
+
+// שחזור משחק
+window.restoreGame = function(id) {
+  onValue(ref(db, 'logs/deletions/' + id), (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      const newId = new Date().getTime().toString();
+      set(ref(db, 'games/' + newId), {
+        date: data.time,
+        players: []
+      });
+      alert("משחק שוחזר!");
+      showStartScreen();
+    }
+  });
 };
 
 // הוספת שחקן
@@ -75,7 +91,7 @@ window.incWin = function(index, amount) {
   renderPlayers();
 };
 
-// שמירת משחק
+// שמירת מצב המשחק
 function saveGame() {
   if (currentGameId) {
     update(ref(db, 'games/' + currentGameId), {
@@ -88,8 +104,14 @@ function saveGame() {
 function renderPlayers() {
   const buyList = document.getElementById("buyList");
   const winList = document.getElementById("winList");
+  const totalBuys = document.getElementById("totalBuys");
+  const totalWins = document.getElementById("totalWins");
+
   buyList.innerHTML = "";
   winList.innerHTML = "";
+
+  let sumBuys = 0;
+  let sumWins = 0;
 
   players.forEach((player, index) => {
     const buyRow = document.createElement("div");
@@ -107,7 +129,13 @@ function renderPlayers() {
       <button onclick="incWin(${index},-1)">-1</button>
     `;
     winList.appendChild(winRow);
+
+    sumBuys += player.buy;
+    sumWins += player.win;
   });
+
+  totalBuys.textContent = sumBuys;
+  totalWins.textContent = sumWins;
 }
 
 // חישוב סיכום
@@ -180,9 +208,10 @@ window.showLogScreen = function() {
   onValue(ref(db, 'logs/deletions'), (snapshot) => {
     const data = snapshot.val();
     if (data) {
-      Object.values(data).reverse().forEach(log => {
+      Object.keys(data).reverse().forEach(id => {
         const div = document.createElement("div");
-        div.textContent = `🗑️ ${log.time} - משחק ${log.gameId} נמחק`;
+        div.textContent = `🗑️ ${data[id].time} - משחק ${data[id].gameId}`;
+        div.onclick = () => restoreGame(id);
         logsList.appendChild(div);
       });
     } else {
