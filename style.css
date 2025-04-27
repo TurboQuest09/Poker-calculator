@@ -24,6 +24,16 @@ button:hover {
   background-color: #45a049;
 }
 
+#newGameButton {
+  background-color: #007BFF;
+  font-size: 20px;
+  padding: 15px 30px;
+}
+
+#newGameButton:hover {
+  background-color: #0056b3;
+}
+
 input {
   padding: 10px;
   font-size: 16px;
@@ -48,17 +58,32 @@ pre {
   margin-top: 5px;
 }
 
-#buyLog {
-  margin-top: 20px;
-  text-align: right;
-  font-size: 14px;
+/* עיצוב שם שחקן + כפתורים */
+.playerRow {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin: 10px 0;
+  gap: 10px;
 }
 
+.playerName {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.playerRow button {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+/* התאמה לטלפון */
 @media (max-width: 600px) {
   button {
-    width: 90%;
+    width: auto;
     font-size: 18px;
-    margin: 10px auto;
+    margin: 10px 5px;
   }
 
   input {
@@ -68,5 +93,10 @@ pre {
 
   img {
     max-width: 90%;
+  }
+
+  .playerRow {
+    flex-wrap: nowrap;
+    justify-content: right;
   }
 }
