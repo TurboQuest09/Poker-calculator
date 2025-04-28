@@ -94,16 +94,26 @@ function showLogScreen() {
       .forEach((g) => {
         const row = document.createElement("div");
         row.className = "log-item";
-        row.textContent = `${new Date(g.deletedAt).toLocaleString("he-IL")} | משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
-
-        const restore = document.createElement("button");
-        restore.textContent = "♻️ שחזר";
-        restore.onclick = () => restoreGame(g.id, g);
-
-        row.appendChild(restore);
+        row.innerHTML = `
+          ${new Date(g.deletedAt).toLocaleString("he-IL")}
+          | משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}
+        `;
+        row.style.cursor = "pointer";
+        row.onclick = () => openDeletedGame(g);
         logs.appendChild(row);
       });
   });
+}
+function openDeletedGame(g) {
+  $("#startScreen").classList.add("hidden");
+  $("#logScreen").classList.add("hidden");
+  $("#mainScreen").classList.remove("hidden");
+
+  players = g.players ? Object.values(g.players) : [];
+  currentGameId = null; // אין GameId כי זה משחק מחוק
+  renderPlayers();
+
+  $("#result").textContent = "🔒 מצב צפייה במשחק שנמחק";
 }
 
 function restoreGame(delId, g) {
