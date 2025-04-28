@@ -222,15 +222,15 @@ return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ${(a.delta > 0 ? '+
 
 /* חישוב איזון */
 function showSettle() {
-  let txt = "🔸 רשימת שחקנים וכניסות\n";
+  let txt = "🧾 רשימת שחקנים וכניסות\n";
   players.forEach(p => txt += `${p.name} ${p.buy}\n`);
   txt += `סה״כ כניסות: ${players.reduce((s, p) => s + p.buy, 0)}\n\n`;
 
-  txt += "🔸 רווח / הפסד\n";
+  txt += "🧮 מאזן רווח / הפסד\n";
   const balances = players.map(p => ({ name: p.name, bal: p.win - p.buy }));
   balances.forEach(b => txt += `${b.name} ${b.bal}\n`);
 
-  txt += "\n🔸 סיכום:\n";
+  txt += "\n💰 סיכום:\n";
   const payers = balances.filter(b => b.bal < 0).sort((a, b) => a.bal - b.bal);
   const recvs = balances.filter(b => b.bal > 0).sort((a, b) => b.bal - a.bal);
   let i = 0, j = 0;
