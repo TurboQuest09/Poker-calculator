@@ -236,7 +236,7 @@ function showSettle() {
   let i = 0, j = 0;
   while (i < payers.length && j < recvs.length) {
     const amt = Math.min(-payers[i].bal, recvs[j].bal);
-    txt += `${payers[i].name} ${amt} ל${recvs[j].name}\n`;
+txt += `${payers[i].name} ${amt} (${amt * 50}) ל${recvs[j].name}\n`;
     payers[i].bal += amt;
     recvs[j].bal -= amt;
     if (payers[i].bal === 0) i++;
