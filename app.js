@@ -10,7 +10,16 @@ let currentGameId = null;
 /* ====== אתחול ===== */
 document.addEventListener("DOMContentLoaded", () => {
   $("#newGameBtn").addEventListener("click", startNewGame);
-  $("#logBtn").addEventListener("click", showLogScreen);
+$("#logBtn").addEventListener("click", requestPasswordAndShowLog);
+
+function requestPasswordAndShowLog() {
+  const pass = prompt("הכנס סיסמה:");
+  if (pass === "101010") { // כאן תחליף לסיסמה שאתה רוצה
+    showLogScreen();
+  } else {
+    alert("סיסמה שגויה");
+  }
+}
   $("#addPlayerBtn").addEventListener("click", addPlayer);
   $("#copyBtn").addEventListener("click", copyResult);
   $("#settleBtn").addEventListener("click", showSettle);
