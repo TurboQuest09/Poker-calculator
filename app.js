@@ -42,23 +42,24 @@ function loadGames() {
   onValue(ref(db, "games"), (snap) => {
     list.innerHTML = "";
     const data = snap.val() || {};
-    Object.entries(data)
-      .map(([id, g]) => ({ id, ...g }))
-      .sort((a, b) => b.created - a.created)
-      .forEach((g) => {
-        const wrap = document.createElement("div");
-        const btn = document.createElement("button");
-        btn.className = "btn-secondary";
-        btn.textContent = `משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
-        btn.onclick = () => openGame(g.id);
+Object.entries(data)
+  .map(([id, g]) => ({ id, ...g }))
+  .sort((a, b) => b.created - a.created)
+  .forEach((g) => {
+    const wrap = document.createElement("div");
+    const btn = document.createElement("button");
+    btn.className = "btn-secondary";
+    btn.textContent = `משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
+    btn.onclick = () => openGame(g.id || g.originalId);
 
-        const del = document.createElement("button");
-        del.textContent = "🗑️ מחק";
-        del.onclick = () => deleteGame(g.id, g);
+    const del = document.createElement("button");
+    del.textContent = "🗑️ מחק";
+    del.onclick = () => deleteGame(g.id || g.originalId, g);
 
-        wrap.append(btn, del);
-        list.appendChild(wrap);
-      });
+    wrap.append(btn, del);
+    list.appendChild(wrap);
+  });
+
   });
 }
 
