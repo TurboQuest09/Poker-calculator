@@ -98,8 +98,9 @@ function showLogScreen() {
 }
 
 function restoreGame(delId, g) {
+  const { id, deletedAt, ...pureGame } = g; // להוציא id ו-deletedAt
   const newRef = push(ref(db, "games"));
-  set(newRef, { ...g, restoredFrom: delId }).then(() =>
+  set(newRef, { ...pureGame, restoredFrom: delId }).then(() =>
     remove(ref(db, `deletedGames/${delId}`))
   );
 }
