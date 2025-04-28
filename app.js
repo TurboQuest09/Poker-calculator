@@ -222,11 +222,11 @@ return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ${(a.delta > 0 ? '+
 
 /* חישוב איזון */
 function showSettle() {
-  let txt = "🧾 רשימת שחקנים וכניסות\n";
+  let txt = "🧾 רשימת שחקנים וכניסות:\n";
   players.forEach(p => txt += `${p.name} ${p.buy}\n`);
   txt += `סה״כ כניסות: ${players.reduce((s, p) => s + p.buy, 0)}\n\n`;
 
-  txt += "🧮 מאזן רווח / הפסד\n";
+  txt += "🧮 מאזן רווח / הפסד:\n";
   const balances = players.map(p => ({ name: p.name, bal: p.win - p.buy }));
   balances.forEach(b => txt += `${b.name} ${b.bal}\n`);
 
