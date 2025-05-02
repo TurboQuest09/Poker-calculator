@@ -222,28 +222,49 @@ return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ${(a.delta > 0 ? '+
 
 /* חישוב איזון */
 function showSettle() {
+  // כותרות + נתוני כניסות
   let txt = "🧾 רשימת שחקנים וכניסות:\n";
-  players.forEach(p => txt += `${p.name} ${p.buy}\n`);
+  players.forEach(p => (txt += `${p.name} ${p.buy}\n`));
   txt += `סה״כ כניסות: ${players.reduce((s, p) => s + p.buy, 0)}\n\n`;
 
+  // מאזן רווח / הפסד
   txt += "🧮 מאזן רווח / הפסד:\n";
   const balances = players.map(p => ({ name: p.name, bal: p.win - p.buy }));
-  balances.forEach(b => txt += `${b.name} ${b.bal}\n`);
+  balances.forEach(b => (txt += `${b.name} ${b.bal}\n`));
 
+  // חישוב תשלומים
   txt += "\n💰 סיכום:\n";
-  const payers = balances.filter(b => b.bal < 0).sort((a, b) => a.bal - b.bal);
-  const recvs = balances.filter(b => b.bal > 0).sort((a, b) => b.bal - a.bal);
-  let i = 0, j = 0;
-  while (i < payers.length && j < recvs.length) {
-    const amt = Math.min(-payers[i].bal, recvs[j].bal);
-txt += `${payers[i].name} ${amt} (${amt * 50}) ל${recvs[j].name}\n`;
-    payers[i].bal += amt;
-    recvs[j].bal -= amt;
-    if (payers[i].bal === 0) i++;
-    if (recvs[j].bal === 0) j++;
+  const payers = balances.filter(b => b.bal < 0).sort((a, b) => a.bal - b.bal); // שליליים (גדול->קטן)
+  const recvs  = balances.filter(b => b.bal > 0).sort((a, b) => b.bal - a.bal); // חיוביים (גדול->קטן)
+
+  /* ======= אלגוריתם one‑shot‑if‑possible ======= */
+  for (const p of payers) {
+    if (p.bal === 0) continue;
+
+    // נסה למצוא מקבל יחיד שיכול לסגור את כל החוב
+    const r = recvs.find(r => r.bal >= -p.bal);
+
+    if (r) {                                             // 🎯 נסגר במכה אחת
+      txt += `${p.name} ${-p.bal} (${-p.bal * 50}) ל${r.name}\n`;
+      r.bal += p.bal;            // p.bal שלילי
+      p.bal  = 0;
+    } else {                                             // אחרת – פיצול כרגיל
+      for (const r2 of recvs) {
+        if (r2.bal === 0) continue;
+        const amt = Math.min(-p.bal, r2.bal);
+        txt += `${p.name} ${amt} (${amt * 50}) ל${r2.name}\n`;
+        p.bal += amt;
+        r2.bal -= amt;
+        if (p.bal === 0) break;
+      }
+    }
   }
-  $("#result").textContent = txt;
+  /* ============================================== */
+
+  // מציגים בדף
+  $("#result").textContent = txt.trim();
 }
+
 
 function copyResult() {
   navigator.clipboard.writeText($("#result").textContent)
