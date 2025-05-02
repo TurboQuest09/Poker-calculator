@@ -61,21 +61,21 @@ Object.entries(data)
     btn.textContent = `משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
     btn.onclick = () => openGame(g.id || g.originalId);
     
-/* ----- בראש app.js: סיסמה למחיקה ----- */
+/* --- סיסמה למחיקה (למעלה בקובץ, מחוץ לכל פונקציה) --- */
 const DELETE_PWD = "101010";   // ← שנה כרצונך
 
-/* ----- פונקציית מחיקה מעודכנת ----- */
-function deleteGame(index) {
+/* --- פונקציית מחיקה יחידה --- */
+function deleteGame(id, g) {
   const ok = prompt("הקלד/י סיסמה כדי למחוק את המשחק:") === DELETE_PWD;
   if (!ok) {
     alert("סיסמה שגויה – המחיקה בוטלה.");
     return;
   }
 
-  // ↓ הקוד הרגיל שלך למחיקה (לא לשנות)
-  games.splice(index, 1);                 // מוחק מהרשימה
-  localStorage.setItem("games", JSON.stringify(games)); // שומר
-  renderGames();                          // מרענן תצוגה
+  // מעביר ללוג מחיקות -> מוחק מהמשחקים
+  const delRef = push(ref(db, "deletedGames"));
+  set(delRef, { ...g, originalId: id, deletedAt: Date.now() })
+    .then(() => remove(ref(db, `games/${id}`)));
 }
 
 /* ====== לוג מחיקות ===== */
