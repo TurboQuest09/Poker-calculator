@@ -7,6 +7,9 @@ const $ = (sel) => document.querySelector(sel);
 let players = [];
 let currentGameId = null;
 
+/* ====== סף מינימלי לפיצול ===== */
+const MIN_SPLIT = 2;   // שנה את המספר אם תרצה רף אחר
+
 /* ====== אתחול ===== */
 document.addEventListener("DOMContentLoaded", () => {
   $("#newGameBtn").addEventListener("click", startNewGame);
@@ -222,6 +225,7 @@ return `<span class="ltr">${dt} ${tm}</span> | ${a.player} | ${(a.delta > 0 ? '+
 
 /* חישוב איזון */
 function showSettle() {
+  /* --- כותרות ודוחות ביניים --- */
   let txt = "🧾 רשימת שחקנים וכניסות:\n";
   players.forEach(p => txt += `${p.name} ${p.buy}\n`);
   txt += `סה״כ כניסות: ${players.reduce((s, p) => s + p.buy, 0)}\n\n`;
@@ -230,20 +234,35 @@ function showSettle() {
   const balances = players.map(p => ({ name: p.name, bal: p.win - p.buy }));
   balances.forEach(b => txt += `${b.name} ${b.bal}\n`);
 
+  /* --- חישוב תשלומים --- */
   txt += "\n💰 סיכום:\n";
-  const payers = balances.filter(b => b.bal < 0).sort((a, b) => a.bal - b.bal);
-  const recvs = balances.filter(b => b.bal > 0).sort((a, b) => b.bal - a.bal);
-  let i = 0, j = 0;
+  const payers = balances.filter(b => b.bal < 0).sort((a, b) => a.bal - b.bal); // חייבים (שלילי → עולה)
+  const recvs  = balances.filter(b => b.bal > 0).sort((a, b) => b.bal - a.bal); // מקבלים (גדול → קטן)
+
+  let i = 0, j = 0;                            // מצביעים על חייב ומקבל
   while (i < payers.length && j < recvs.length) {
-    const amt = Math.min(-payers[i].bal, recvs[j].bal);
-txt += `${payers[i].name} ${amt} (${amt * 50}) ל${recvs[j].name}\n`;
-    payers[i].bal += amt;
-    recvs[j].bal -= amt;
-    if (payers[i].bal === 0) i++;
-    if (recvs[j].bal === 0) j++;
+    let amt = Math.min(-payers[i].bal, recvs[j].bal); // הסכום שחייב יכול לשלם עכשיו
+
+    /* --- מנגנון MIN_SPLIT --- */
+    if (amt < MIN_SPLIT && j + 1 < recvs.length) {
+      // הסכום קטן מדי → מאחד את הקרדיט של המקבל הזה עם הבא בתור וממשיך
+      recvs[j + 1].bal += recvs[j].bal;
+      j++;
+      continue;
+    }
+
+    /* --- רישום והפחתת יתרות --- */
+    txt += `${payers[i].name} ${amt} (${amt * 50}) ל${recvs[j].name}\n`;
+    payers[i].bal += amt;      // החייב פדה חלק מהחוב (bal שלילי → עולה)
+    recvs[j].bal  -= amt;      // המקבל קיבל חלק מהקרדיט
+
+    if (payers[i].bal === 0) i++; // חייב הבא
+    if (recvs[j].bal  === 0) j++; // מקבל הבא
   }
+
   $("#result").textContent = txt;
 }
+
 
 function copyResult() {
   navigator.clipboard.writeText($("#result").textContent)
