@@ -60,22 +60,23 @@ Object.entries(data)
     btn.className = "btn-secondary";
     btn.textContent = `משחק מ־ ${new Date(g.created).toLocaleString("he-IL")}`;
     btn.onclick = () => openGame(g.id || g.originalId);
-    
-/* --- סיסמה למחיקה (למעלה בקובץ, מחוץ לכל פונקציה) --- */
-const DELETE_PWD = "101010";   // ← שנה כרצונך
 
-/* --- פונקציית מחיקה יחידה --- */
+    const del = document.createElement("button");
+    del.textContent = "🗑️ מחק";
+    del.onclick = () => deleteGame(g.id || g.originalId, g);
+
+    wrap.append(btn, del);
+    list.appendChild(wrap);
+  });
+
+  });
+}
+
 function deleteGame(id, g) {
-  const ok = prompt("הקלד/י סיסמה כדי למחוק את המשחק:") === DELETE_PWD;
-  if (!ok) {
-    alert("סיסמה שגויה – המחיקה בוטלה.");
-    return;
-  }
-
-  // מעביר ללוג מחיקות -> מוחק מהמשחקים
   const delRef = push(ref(db, "deletedGames"));
-  set(delRef, { ...g, originalId: id, deletedAt: Date.now() })
-    .then(() => remove(ref(db, `games/${id}`)));
+  set(delRef, { ...g, originalId: id, deletedAt: Date.now() }).then(() =>
+    remove(ref(db, `games/${id}`))
+  );
 }
 
 /* ====== לוג מחיקות ===== */
