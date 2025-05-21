@@ -71,6 +71,8 @@ button {
 }
 
 .hidden { display:none; }
+/* מרווח קטן */
+.mt-2 { margin-top: .5rem; }
 
 /* לוג מחיקות */
 .log-item {
