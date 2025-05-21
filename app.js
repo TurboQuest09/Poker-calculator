@@ -1,4 +1,11 @@
-import { db, ref, push, set, remove, onValue } from "./firebase.js";
+import {
+  auth, db,                              // מופעים
+  ref, push, set, remove, onValue,       // Realtime DB
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "./firebase.js";
 
 /* ====== DOM קיצור ===== */
 const $ = (sel) => document.querySelector(sel);
@@ -11,6 +18,43 @@ let currentGameId = null;
 document.addEventListener("DOMContentLoaded", () => {
   $("#newGameBtn").addEventListener("click", startNewGame);
 $("#logBtn").addEventListener("click", requestPasswordAndShowLog);
+// === Auth ===
+const authBox   = document.getElementById("authBox");
+const signupF   = document.getElementById("signupForm");
+const loginF    = document.getElementById("loginForm");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// 1. הצגת חלון ההתחברות רק כשאין משתמש
+onAuthStateChanged(auth, (user) => {
+  authBox.classList.toggle("hidden", !!user);
+  // אפשר כאן לטעון את המשחקים רק לאחר login:
+  // if (user) loadGames();
+});
+
+// 2. הרשמה
+signupF.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const { email, password, username } = signupF;
+  try {
+    const cred = await createUserWithEmailAndPassword(
+      auth, email.value, password.value
+    );
+    // שמירת שם-משתמש במסד
+    await set(ref(db, `users/${cred.user.uid}`), { username: username.value });
+    alert("נרשמת בהצלחה!");
+  } catch (err) { alert(err.message); }
+});
+
+// 3. כניסה
+loginF.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const { email, password } = loginF;
+  try { await signInWithEmailAndPassword(auth, email.value, password.value); }
+  catch (err) { alert(err.message); }
+});
+
+// 4. יציאה
+logoutBtn.addEventListener("click", () => signOut(auth));
 
 function requestPasswordAndShowLog() {
   const pass = prompt("הכנס סיסמה:");
