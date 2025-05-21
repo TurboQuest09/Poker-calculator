@@ -30,6 +30,26 @@
   <div id="gamesList"></div>
 </div>
 
+<!-- 🔐 Login / Signup box – הדבק כאן -->
+<div id="authBox" class="centered hidden">
+<h2>התחברות / הרשמה</h2>
+
+<form id="signupForm">
+<input name="email"    type="email"    placeholder="אימייל"   required />
+<input name="password" type="password" placeholder="סיסמה"    required />
+<input name="username" type="text"     placeholder="שם משתמש" required />
+<button type="submit">הרשמה</button>
+</form>
+
+<form id="loginForm" class="mt-2">
+<input name="email"    type="email"    placeholder="אימייל"   required />
+<input name="password" type="password" placeholder="סיסמה"    required />
+<button type="submit">כניסה</button>
+</form>
+
+<button id="logoutBtn" class="mt-2">התנתק</button>
+</div>
+  
 <!-- מסך ניהול משחק -->
 <div id="mainScreen" class="hidden centered">
   <h2>ניהול משחק</h2>
