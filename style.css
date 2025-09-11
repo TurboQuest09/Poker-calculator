@@ -182,8 +182,10 @@ h3{ font-size:1.1rem }
 
 /* Image polish */
 img{
-  border-radius:16px;
-  box-shadow:var(--shadow-sm);
+  border-radius:0;    /* או תשאיר אם אתה כן רוצה עיגול פינות */
+  box-shadow:none;    /* מבטל צללים/מסגרת */
+  display:block;
+  max-width:100%;
 }
 
 /* LTR spans inside RTL lines */
