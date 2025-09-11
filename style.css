@@ -1,88 +1,190 @@
-/* מבנה כללי */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 15px;
+/* === Modern UI for Poker Calculator === */
+/* Optional web font */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+
+/* Design tokens */
+:root{
+  --bg:#f4f6fa;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --text:#111827;
+
+  --primary:#4f46e5;        /* Indigo */
+  --primary-2:#3b82f6;      /* Blue */
+  --danger:#dc3545;
+  --accent:#0ea5e9;
+
+  --radius:12px;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.08);
+  --shadow-md:0 4px 14px rgba(0,0,0,.12);
+  --focus:0 0 0 3px rgba(59,130,246,.25);
 }
 
-.centered {
-  max-width: 420px;
-  margin: auto;
-  text-align: center;
+/* Base */
+*{box-sizing:border-box}
+body{
+  font-family:'Rubik', Arial, sans-serif;
+  margin:0;
+  padding:24px;
+  background:var(--bg);
+  color:var(--text);
+}
+.centered{
+  max-width:720px;
+  margin:auto;
+  text-align:center;
 }
 
-/* כפתורים */
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-size: 1rem;
-  margin: 6px;
+/* Inputs */
+input{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #e5e7eb;
+  border-radius:var(--radius);
+  background:#fff;
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+input:focus{
+  border-color:var(--primary-2);
+  box-shadow:var(--focus);
 }
 
-.btn-primary   { background:#28a745; color:#fff; font-size:1.15rem; width:90%; }
-.btn-secondary { background:#007bff; color:#fff; font-size:0.95rem; }
+/* Buttons */
+button{
+  cursor:pointer;
+  border:none;
+  border-radius:var(--radius);
+  padding:12px 18px;
+  font-size:1rem;
+  margin:6px;
+  color:#fff;
+  background:linear-gradient(180deg, var(--primary-2), var(--primary));
+  box-shadow:var(--shadow-sm);
+  transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+button:hover{ transform:translateY(-2px); box-shadow:var(--shadow-md); }
+button:active{ transform:translateY(0); opacity:.9; }
+button:focus-visible{ outline:none; box-shadow:var(--focus); }
 
-.add-player {
+/* Button variants */
+.btn-primary{
+  background:linear-gradient(180deg, var(--primary-2), var(--primary));
+  font-size:1.1rem;
+  width:90%;
+}
+.btn-secondary{
+  background:linear-gradient(180deg, #60a5fa, #3b82f6);
+  font-size:.95rem;
+}
+
+/* Add player row */
+.add-player{
   display:flex;
-  flex-direction: row-reverse;   /* קלט מימין, כפתור משמאל ב-RTL */
-  gap:6px;
-  justify-content:center;
-}
-
-/* רשימת שחקנים */
-.player-row {
-  display: flex;
-  flex-direction: row-reverse;   /* שם מימין, כפתורים משמאל */
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px;
-  background:#f1f1f1;
-  padding:6px;
-  margin:4px 0;
-  border-radius:6px;
-}
-
-.player-row button {
-  background:#e0e0e0;
-  width:46px;
-  height:38px;
-}
-
-.value { width:32px; display:inline-block; text-align:center; }
-
-.totals { font-weight:bold; margin-top:4px; }
-
-.button-bar {
-  display:flex;
+  flex-direction:row-reverse; /* RTL, input מימין */
   gap:8px;
   justify-content:center;
-  margin-top:12px;
-}
-
-/* לוג פעולות */
-.log-box {
-  margin-top: 8px;
-  background:#f9f9f9;
-  padding:6px;
-  border-radius:6px;
-  white-space:pre-wrap;
-}
-
-.hidden { display:none; }
-/* מרווח קטן */
-.mt-2 { margin-top: .5rem; }
-
-/* לוג מחיקות */
-.log-item {
-  display:flex;
-  justify-content: space-between;
   align-items:center;
-  background:#f9f9f9;
-  padding:8px;
-  margin:4px 0;
-  border-radius:6px;
+  margin:10px 0 16px;
 }
 
-.log-item button { background:#dc3545; color:#fff; }
+/* Player rows */
+.player-row{
+  display:flex;
+  flex-direction:row-reverse; /* שם מימין, כפתורים משמאל */
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  background:var(--card);
+  padding:12px 14px;
+  margin:8px 0;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+.player-row button{
+  width:52px;
+  height:40px;
+  margin:0;
+  background:linear-gradient(180deg, #e5e7eb, #cbd5e1);
+  color:#111827;
+}
+.player-row button:hover{ box-shadow:var(--shadow-md); }
+.value{
+  width:40px;
+  display:inline-block;
+  text-align:center;
+  font-weight:600;
+}
+
+/* Totals */
+.totals{
+  font-weight:700;
+  margin-top:6px;
+  background:var(--card);
+  padding:8px 12px;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+  display:inline-block;
+}
+
+/* Bottom buttons bar */
+.button-bar{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:14px;
+}
+
+/* Cards and logs */
+pre{
+  white-space:pre-wrap;
+  text-align:start;
+}
+#result,
+.log-box{
+  margin-top:12px;
+  background:var(--card);
+  padding:12px;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+.log-box{ color:#111827; }
+
+/* Deleted log rows */
+.log-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#f1f5f9;
+  padding:12px;
+  margin:6px 0;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+.log-item button{
+  background:linear-gradient(180deg, #ef4444, var(--danger));
+  color:#fff;
+  padding:8px 12px;
+  border-radius:10px;
+}
+
+/* Utilities */
+.hidden{ display:none; }
+
+/* Headings tweak */
+h1,h2,h3{
+  margin:8px 0 12px;
+  font-weight:700;
+}
+h1{ font-size:1.8rem }
+h2{ font-size:1.35rem }
+h3{ font-size:1.1rem }
+
+/* Image polish */
+img{
+  border-radius:16px;
+  box-shadow:var(--shadow-sm);
+}
+
+/* LTR spans inside RTL lines */
+.ltr{ direction:ltr; display:inline-block }
