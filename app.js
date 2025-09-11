@@ -26,6 +26,14 @@ function requestPasswordAndShowLog() {
   $("#backBtn").addEventListener("click", showStartScreen);
 
   loadGames();
+  
+    // מניעת double-tap zoom במובייל
+  let lastTouch = 0;
+  document.addEventListener('touchend', e => {
+    const now = Date.now();
+    if (now - lastTouch <= 300) e.preventDefault();
+    lastTouch = now;
+  }, { passive: false });
 });
 
 /* ====== Firebase − משחקים ===== */
