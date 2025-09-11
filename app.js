@@ -64,18 +64,21 @@ Object.entries(data)
   .sort((a, b) => b.created - a.created)
   .forEach((g) => {
     const wrap = document.createElement("div");
+
     const btn = document.createElement("button");
     btn.className = "btn-secondary";
     btn.textContent = `משחק  ${new Date(g.created).toLocaleString("he-IL")}`;
     btn.onclick = () => openGame(g.id || g.originalId);
 
     const del = document.createElement("button");
+    del.className = "delete";          // ← הוסף מחלקה כדי ליישר באותה שורה
     del.textContent = "🗑️";
     del.onclick = () => deleteGame(g.id || g.originalId, g);
 
     wrap.append(btn, del);
     list.appendChild(wrap);
   });
+
 
   });
 }
