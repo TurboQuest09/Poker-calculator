@@ -74,8 +74,10 @@ button:focus-visible{ outline:none; box-shadow:var(--focus); }
   width:90%;
 }
 .btn-secondary{
-  background:linear-gradient(180deg, #60a5fa, #3b82f6);
-  font-size:.95rem;
+  background: #ffffff;        /* רקע לבן */
+  color: #374151;             /* טקסט אפור כהה (Tailwind gray-700) */
+  font-size: .95rem;
+  border: 1px solid #d1d5db;  /* מסגרת אפורה בהירה */
 }
 
 /* Add player row */
