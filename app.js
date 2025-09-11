@@ -1,11 +1,4 @@
-import {
-  auth, db,                              // מופעים
-  ref, push, set, remove, onValue,       // Realtime DB
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from "./firebase.js";
+import { db, ref, push, set, remove, onValue } from "./firebase.js";
 
 /* ====== DOM קיצור ===== */
 const $ = (sel) => document.querySelector(sel);
@@ -18,11 +11,6 @@ let currentGameId = null;
 document.addEventListener("DOMContentLoaded", () => {
   $("#newGameBtn").addEventListener("click", startNewGame);
 $("#logBtn").addEventListener("click", requestPasswordAndShowLog);
-// === Auth ===
-const authBox   = document.getElementById("authBox");
-const signupF   = document.getElementById("signupForm");
-const loginF    = document.getElementById("loginForm");
-const logoutBtn = document.getElementById("logoutBtn");
 
 function requestPasswordAndShowLog() {
   const pass = prompt("הכנס סיסמה:");
