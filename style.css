@@ -198,3 +198,19 @@ img{
   box-shadow: none !important;
 }
 
+/* מניעת זום אוטומטי ועידון מגע */
+html, body { -webkit-text-size-adjust: 100%; }
+button, a { touch-action: manipulation; }
+
+/* חשוב ל-iOS: מונע זום כששדה מקבל פוקוס */
+input, select, textarea { font-size: 16px; }
+
+/* התאמות מובייל */
+@media (max-width: 480px){
+  .centered { max-width: 100%; padding: 12px; }   /* במקום 420px קבוע */
+  .btn-primary, .btn-secondary { width: 100%; }   /* כפתורים ברוחב מלא */
+  .add-player { flex-direction: column-reverse; gap: 8px; }
+  .player-row { gap: 8px; }
+  .player-row button { width: 48px; height: 40px; }
+  img { max-width: 100%; height: auto; display: block; }
+}
