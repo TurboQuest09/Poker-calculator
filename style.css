@@ -214,3 +214,31 @@ input, select, textarea { font-size: 16px; }
   .player-row button { width: 48px; height: 40px; }
   img { max-width: 100%; height: auto; display: block; }
 }
+
+/* Games list on one line */
+#gamesList > div{
+  display:flex;
+  flex-direction:row-reverse;   /* RTL: האייקון יישאר בצד שמאל */
+  align-items:center;
+  gap:8px;
+}
+
+#gamesList .btn-secondary{
+  flex:1;               /* ממלא את הרוחב */
+  margin:0;
+  white-space:nowrap;   /* לא לשבור שורה */
+  min-width:0;          /* מאפשר קיצור נכון */
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+#gamesList .delete{
+  width:40px;           /* רוחב קבוע לאייקון */
+  min-width:40px;
+  height:40px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:0;
+  flex-shrink:0;
+}
