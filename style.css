@@ -191,9 +191,10 @@ img{
 /* LTR spans inside RTL lines */
 .ltr{ direction:ltr; display:inline-block }
 
-/* ביטול מסגרת/רקע סביב התמונה הראשית */
-img[src="main_pic.png"] {
-  background: transparent; /* מבטל רקע לבן */
-  border: none;            /* מסיר גבול אם קיים */
-  box-shadow: none;        /* מסיר צל */
+/* ביטול מסגרת סביב התמונה הראשית */
+#startScreen {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
+
