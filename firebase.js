@@ -3,15 +3,16 @@
    הגדרת Firebase + ייצוא כלי-עזר לשימוש בקבצים אחרים
 */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getDatabase,
   ref,
   push,
   set,
+  update,
   remove,
   onValue
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
 import {
   getAuth,
   createUserWithEmailAndPassword,
